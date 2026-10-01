@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dayr al Zaytoun · Lebanese Olive Oil</title>
+<style>
+:root{
+  --bg:#EDEFE6; --paper:#FBFBF7; --ink:#1F261C; --muted:#5E6657; --line:#CFD4C3; --line-soft:#E2E6D8;
+  --olive:#4E6A2C; --olive-deep:#35491E; --olive-soft:#E4EBD6;
+  --oil:#B9851B; --oil-soft:#F5EBD0;
+  --red:#9F3A2A; --red-soft:#F6E1DC; --amber:#B97514; --amber-soft:#F7EACF; --blue:#3D5C7A; --blue-soft:#DEE7EF;
+  --stone:#7B7F72; --stone-soft:#E6E7E1; --plum:#6A4C7A; --plum-soft:#EAE1EF;
+  --radius:6px; --shadow:0 1px 0 rgba(31,38,28,.06);
+  font-size:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45;-webkit-text-size-adjust:100%}
+body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.01em}
+h1{font-size:1.35rem}h2{font-size:1.1rem}h3{font-size:.95rem}
+p{margin:.25rem 0}
+a{color:var(--olive-deep)}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.82rem}
+.tiny{font-size:.74rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85em}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:var(--olive-deep);color:#F3F5EA;padding:0 12px;height:52px;display:flex;align-items:center;gap:10px}
+.top .brand{font-weight:700;letter-spacing:.01em;white-space:nowrap}
+.top .brand small{display:none;font-weight:400;font-size:.68rem;opacity:.8;letter-spacing:.06em;margin-top:-3px}
+.top .spacer{flex:1}
+.top select{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:var(--radius);padding:4px 6px;font-size:.8rem;max-width:120px}
+@media(min-width:600px){.top select{max-width:220px}}
+@media(max-width:420px){.net #netLabel{display:none}.net{padding:6px 8px}}
+.top select option{color:var(--ink)}
+.net{display:flex;align-items:center;gap:6px;font-size:.78rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--radius);padding:4px 8px;cursor:pointer;user-select:none}
+.net .dot{width:8px;height:8px;border-radius:50%;background:#9CD672}
+.net.off .dot{background:#E8A33B}
+.offline-bar{background:var(--amber-soft);color:#5E3A05;border-bottom:1px solid #E5CFA0;padding:6px 12px;font-size:.82rem;display:none}
+.offline-bar.show{display:block}
+
+/* layout */
+.shell{display:flex;max-width:1180px;margin:0 auto}
+.side{display:none}
+main{flex:1;min-width:0;padding:14px 12px 24px}
+.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--paper);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+.bottomnav a{flex:1;text-align:center;padding:9px 2px 7px;font-size:.68rem;color:var(--muted);text-decoration:none;border-top:2px solid transparent}
+.bottomnav a.on{color:var(--olive-deep);border-top-color:var(--olive);font-weight:600}
+.bottomnav a span{display:block;font-size:1.05rem;line-height:1.1}
+@media(min-width:900px){
+  .top .brand small{display:block}
+  body{padding-bottom:0}
+  .bottomnav{display:none}
+  .side{display:block;width:190px;padding:18px 10px;flex-shrink:0}
+  .side a{display:block;padding:8px 10px;border-radius:var(--radius);color:var(--muted);text-decoration:none;font-size:.92rem}
+  .side a.on{background:var(--olive-soft);color:var(--olive-deep);font-weight:600}
+  main{padding:18px 18px 40px}
+}
+
+/* cards & sections */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px}
+.card > .hd{padding:10px 14px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card > .hd h2,.card > .hd h3{flex:1}
+.card > .bd{padding:12px 14px}
+.pagehead{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.pagehead h1{flex:1;min-width:200px}
+.pagehead .sub{color:var(--muted);font-size:.85rem;margin-top:2px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.toolbar select,.toolbar input{padding:6px 8px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);font-size:.88rem}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:.9rem;font-weight:500;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{background:#F2F4EA}
+.btn.primary{background:var(--olive);border-color:var(--olive);color:#fff}
+.btn.primary:hover{background:var(--olive-deep)}
+.btn.danger{background:var(--paper);border-color:var(--red);color:var(--red)}
+.btn.danger:hover{background:var(--red-soft)}
+.btn.sm{padding:5px 10px;font-size:.8rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.link{border:none;background:none;padding:2px 4px;color:var(--olive-deep);text-decoration:underline}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:.74rem;font-weight:600;white-space:nowrap;border:1px solid transparent}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.9}
+.b-stone{background:var(--stone-soft);color:#4E5249}
+.b-blue{background:var(--blue-soft);color:var(--blue)}
+.b-amber{background:var(--amber-soft);color:#7A4B07}
+.b-olive{background:var(--olive-soft);color:var(--olive-deep)}
+.b-red{background:var(--red-soft);color:var(--red)}
+.b-plum{background:var(--plum-soft);color:var(--plum)}
+.b-oil{background:var(--oil-soft);color:#7A5410}
+.tag{display:inline-block;padding:1px 6px;border-radius:4px;background:var(--stone-soft);color:var(--muted);font-size:.7rem;font-weight:600;vertical-align:middle}
+.tag.auto{background:var(--oil-soft);color:#7A5410}
+.tag.queued{background:var(--amber-soft);color:#7A4B07}
+
+/* forms */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px}
+.field label .opt{font-weight:400;color:var(--muted)}
+.field input[type=text],.field input[type=number],.field input[type=date],.field input[type=time],.field select,.field textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;font-size:1rem}
+.field textarea{min-height:64px;resize:vertical}
+.field .help{font-size:.78rem;color:var(--muted);margin-top:3px}
+.field input:focus,.field select:focus,.field textarea:focus,.btn:focus-visible,.check:focus-within{outline:2px solid var(--oil);outline-offset:1px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:520px){.grid3{grid-template-columns:1fr 1fr}}
+.readonly{background:var(--oil-soft);border:1px dashed #DDC58B;border-radius:var(--radius);padding:8px 10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.readonly .v{font-weight:600;font-size:1.05rem}
+.check{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;margin-bottom:6px;cursor:pointer}
+.check input{margin-top:3px;width:18px;height:18px;flex-shrink:0}
+.check.dis{opacity:.55;cursor:not-allowed;background:var(--stone-soft)}
+.check.sel{border-color:var(--olive);background:var(--olive-soft)}
+.check .t{flex:1;min-width:0}
+.check .t b{display:block;font-size:.92rem}
+.check .t span{font-size:.8rem;color:var(--muted)}
+details{border:1px solid var(--line-soft);border-radius:var(--radius);padding:6px 10px;margin:8px 0;background:#fff}
+details summary{cursor:pointer;font-size:.86rem;font-weight:600;color:var(--olive-deep)}
+details[open] summary{margin-bottom:8px}
+
+/* banners */
+.banner{padding:9px 12px;border-radius:var(--radius);font-size:.86rem;margin:8px 0;border:1px solid}
+.banner.warn{background:var(--amber-soft);border-color:#E5CFA0;color:#5E3A05}
+.banner.block{background:var(--red-soft);border-color:#E8B8AE;color:var(--red)}
+.banner.info{background:var(--blue-soft);border-color:#C0D0DE;color:#243B4F}
+.banner.ok{background:var(--olive-soft);border-color:#C6D5AC;color:var(--olive-deep)}
+.banner b{font-weight:700}
+
+/* tables & lists */
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:.76rem;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:8px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr.row{cursor:pointer}tr.row:hover td{background:#F4F6EC}
+.tbl{overflow-x:auto}
+.runcard{display:block;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;text-decoration:none;color:inherit}
+.runcard .l1{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.runcard .l1 b{font-size:.98rem}
+.runcard .l2{font-size:.82rem;color:var(--muted);margin-top:3px}
+.kv{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:4px 10px;font-size:.88rem}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;word-break:break-word}
+.kv{margin:0}
+.empty{padding:22px;text-align:center;color:var(--muted);font-size:.9rem}
+
+/* oil ledger strip: signature element */
+.ledger{margin:10px 0}
+.ledger .bar{display:flex;height:34px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+.ledger .seg{display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;color:#fff;min-width:0;overflow:hidden;white-space:nowrap;padding:0 6px}
+.ledger .seg.pk{background:var(--olive)}
+.ledger .seg.ls{background:var(--oil)}
+.ledger .seg.ng{background:var(--red)}
+.ledger .legend{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-top:4px;gap:8px;flex-wrap:wrap}
+.impact{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin:10px 0}
+.impact .row{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line-soft);font-size:.88rem}
+.impact .row:last-child{border-bottom:none}
+.impact .row .d{font-weight:600}
+.impact .row .minus{color:var(--red)}.impact .row .plus{color:var(--olive-deep)}
+
+/* wizard */
+.steps{display:flex;gap:4px;margin-bottom:12px}
+.steps button{flex:1;border:none;background:none;padding:0;cursor:pointer;text-align:left}
+.steps .l{height:4px;border-radius:2px;background:var(--line);margin-bottom:4px}
+.steps .done .l{background:var(--olive)}
+.steps .cur .l{background:var(--oil)}
+.steps .n{font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.steps .cur .n{color:var(--ink);font-weight:600}
+
+/* evidence */
+.evgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:700px){.evgrid{grid-template-columns:repeat(4,1fr)}}
+.ev{border:1px solid var(--line);border-radius:var(--radius);background:#fff;overflow:hidden}
+.ev .ph{aspect-ratio:4/3;background:var(--stone-soft);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem;position:relative}
+.ev .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ev .cap{padding:6px 8px;font-size:.8rem}
+.ev .cap b{display:block}
+.ev input[type=file]{display:none}
+.ev .act{display:flex;gap:4px;padding:0 8px 8px}
+.progress{height:6px;background:var(--line-soft);border-radius:3px;overflow:hidden;margin:6px 0}
+.progress i{display:block;height:100%;background:var(--olive)}
+
+/* audit */
+.audit{list-style:none;margin:0;padding:0}
+.audit li{padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:.84rem;display:grid;grid-template-columns:auto 1fr;gap:10px}
+.audit li time{color:var(--muted);font-size:.76rem;white-space:nowrap}
+.audit li b{font-weight:600}
+.audit li .who{color:var(--muted)}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(31,38,28,.5);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:700px){.modal-bg{align-items:center}}
+.modal{background:var(--paper);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:10px 10px 0 0;padding:16px 16px 20px}
+@media(min-width:700px){.modal{border-radius:10px}}
+.modal h2{margin-bottom:8px}
+.toast{pointer-events:none;position:fixed;left:50%;transform:translateX(-50%);bottom:76px;background:var(--ink);color:#fff;padding:9px 14px;border-radius:var(--radius);font-size:.86rem;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:92vw}
+@media(min-width:900px){.toast{bottom:24px}}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:12px;overflow-x:auto}
+.tabs a{padding:8px 12px;text-decoration:none;color:var(--muted);font-size:.88rem;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--olive-deep);border-bottom-color:var(--olive);font-weight:600}
+.trace{max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px}
+.trace .brand{font-size:.8rem;letter-spacing:.08em;color:var(--muted)}
+.trace h1{font-size:1.5rem;margin:4px 0 10px}
+.qrbox{width:84px;height:84px;background:repeating-linear-gradient(90deg,#222 0 6px,#fff 6px 12px),repeating-linear-gradient(#222 0 6px,#fff 6px 12px);background-blend-mode:difference;border:4px solid #fff;outline:1px solid var(--line);float:right;margin:0 0 8px 12px}
+
+/* home */
+.hero{background:var(--olive-deep);color:#F3F5EA;border-radius:8px;padding:22px 18px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(185,133,27,.55),rgba(185,133,27,0) 70%)}
+.hero .eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--oil);font-weight:700;margin-bottom:8px}
+.hero h1{font-size:1.6rem;line-height:1.15;max-width:22ch}
+.hero p{max-width:52ch;opacity:.9;margin:10px 0 14px;font-size:.95rem}
+.hero .btnrow{margin:0}
+.hero .btn{background:var(--oil);border-color:var(--oil);color:#1F261C}
+.hero .btn.ghost{background:transparent;border-color:rgba(255,255,255,.4);color:#fff}
+.flow{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:700px){.flow{grid-template-columns:repeat(4,1fr)}}
+.flow .st{border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;background:#fff;font-size:.86rem}
+.flow .st b{display:block;font-size:.95rem;margin-bottom:2px}
+.flow .st .k{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--olive);color:#fff;text-align:center;line-height:22px;font-size:.78rem;font-weight:700;margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:700px){.two{grid-template-columns:1fr 1fr}}
+.plain{margin:0;padding-left:18px;font-size:.9rem}
+.plain li{margin:4px 0}
+.founder{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.founder .ava{width:84px;height:84px;border-radius:50%;background:var(--olive-soft);color:var(--olive-deep);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;flex-shrink:0;border:2px solid var(--olive)}
+.founder .fx{flex:1;min-width:220px}
+.founder .fx h3{font-size:1.05rem}
+.founder .fx .role{color:var(--muted);font-size:.86rem;margin-bottom:6px}
+.ph{background:var(--amber-soft);border-bottom:1px dashed var(--amber);padding:0 2px}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:700px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;background:#fff}
+.stat .n{font-size:1.5rem;font-weight:700;color:var(--olive-deep);line-height:1.1}
+.stat .l{font-size:.78rem;color:var(--muted)}
+.chain{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+.chain .cs{flex:0 0 200px;scroll-snap-align:start;border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:10px 12px;font-size:.82rem;position:relative}
+.chain .cs.here{border-color:var(--oil);background:var(--oil-soft)}
+.chain .cs b{display:block;font-size:.92rem;margin-bottom:3px}
+.chain .cs .idx{font-size:.68rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.chain .cs::after{content:"→";position:absolute;right:-12px;top:12px;color:var(--muted);font-size:1rem}
+.chain .cs:last-child::after{content:""}
+@media(min-width:900px){.chain{display:grid;grid-template-columns:repeat(4,1fr);overflow:visible}.chain .cs::after{content:""}}
+.insight{border-left:3px solid var(--oil);padding:6px 10px;margin-bottom:10px;background:#fff;border-radius:0 var(--radius) var(--radius) 0}
+.insight .m{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.insight b{display:block;font-size:.95rem}
+.insight p{font-size:.86rem;margin:3px 0 0}
+.chap{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.84rem;padding:4px 0;border-bottom:1px solid var(--line-soft)}
+.chap .cid{font-family:ui-monospace,Menlo,monospace;font-size:.76rem;color:var(--muted);padding-top:2px}
+.chap.here{background:var(--oil-soft);margin:0 -10px;padding:6px 10px;border-radius:4px}
+@media(prefers-reduced-motion:no-preference){.modal{animation:up .18s ease-out}@keyframes up{from{transform:translateY(12px);opacity:.6}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#home" style="color:inherit;text-decoration:none">Dayr al Zaytoun<small>Lebanese Olive Oil · Packaging runs</small></a>
+  <div class="spacer"></div>
+  <select id="roleSel" title="Signed-in user" aria-label="Switch user"></select>
+  <div class="net" id="net" role="button" tabindex="0" title="Toggle connectivity (prototype)"><span class="dot"></span><span id="netLabel">Online</span></div>
+</header>
+<div class="offline-bar" id="offlineBar">Working offline. Draft edits are queued and will sync when you reconnect. Completing a run needs a connection.</div>
+<div class="shell">
+  <nav class="side" id="sideNav"></nav>
+  <main id="app"></main>
+</div>
+<nav class="bottomnav" id="bottomNav"></nav>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+<script>
+/* ========================= STATE & SEED ========================= */
+const ROLES={
+  'Field Staff':{draft:true,complete:false,claims:false,admin:false,user:'Rami Haddad'},
+  'Production Lead':{draft:true,complete:true,claims:false,admin:false,user:'Nour Khoury'},
+  'Marketing':{draft:false,complete:false,claims:true,admin:false,user:'Lina Saab'},
+  'Admin':{draft:true,complete:true,claims:true,admin:true,user:'Georges Aoun'}
+};
+const RUN_STATUS=['Draft','Ready for Review','In Progress','Completed','Correction Requested','Archived'];
+const LOSS_REASONS=['Filling-system retention','Spillage','Line priming','Overfill / underfill adjustment','Measurement difference','Sampling','Other'];
+const PKG_TYPES=['Glass Bottle','Tin','PET','Bag-in-Box','Ceramic','Other'];
+const MATERIALS=['Dark Glass','Clear Glass','Metal / Tin','PET / Plastic','Ceramic','Composite','Other','Unknown'];
+const COLORS=['Dark Green','Amber / Brown','Clear','Other','Unknown'];
+const CLOSURES=['Screw Cap','Pourer','Cork','Synthetic Cork','Tamper-Evident Cap','Flip Cap','Other','Unknown'];
+const TAMPER=['Present','Not Present','Unknown'];
+const QR_STATUS=['Not Used','Planned','Generated','Printed','Active','Disabled'];
+const VERIF=['Not Checked','Verified','Flagged'];
+const CLAIM_STATES=['Farmer Declared','Supported','Supported with Limitations','Unsupported','Rejected','Expired','Superseded'];
+const ELIGIBLE=new Set(['Farmer Declared','Supported','Supported with Limitations']);
+const JOB_STATUS=['Requested','Waiting','Cancelled','Ready','Processing','Partial','Completed','Failed','Admin Review'];
+const RETENTION=['Active','Archived','Pending Deletion','Deleted','Retained by Policy','Anonymized'];
+const EV_SLOTS=[['empty','Empty packaging'],['filling','Filling in progress'],['finished','Finished labelled units'],['label','Label / lot code close-up']];
+
+const S={
+  role:'Production Lead', online:true, queue:[], seq:{PR:4,PI:1,COR:0,DJ:1,MV:8,EV:0},
+  farm:{id:'F1',name:'Dayr al Zaytoun',region:'Koura, North Lebanon'},
+  settings:{tolerancePct:3,claimPolicy:'block',bbRuleOn:true,bbMonths:18,lotPattern:'LOT-{YYMMDD}-{N}',waitingDays:14,currency:'USD',anonymizeAfterDays:730},
+  products:[
+    {id:'P1',name:'Koura Extra Virgin',brand:'Dayr al Zaytoun',status:'Active',labelVersion:'LV-P1-v3',legal:'Store away from light and heat. Produced and bottled in Koura, Lebanon.',claimIds:['C1','C2','C3','C4','C5']},
+    {id:'P2',name:'Early Harvest Reserve',brand:'Dayr al Zaytoun',status:'Active',labelVersion:'LV-P2-v2',legal:'Keep cool and dark. Produced and bottled in Koura, Lebanon.',claimIds:['C1','C7','C3','C6']},
+    {id:'P3',name:'Old Grove Table Oil',brand:'Dayr al Zaytoun',status:'Discontinued',labelVersion:'LV-P3-v1',legal:'Produced in Lebanon.',claimIds:['C1']}
+  ],
+  variants:[
+    {id:'V1',productId:'P1',name:'500 ml dark glass',unitMl:500,type:'Glass Bottle',material:'Dark Glass',color:'Dark Green',closure:'Tamper-Evident Cap',tamper:'Present'},
+    {id:'V2',productId:'P1',name:'250 ml dark glass',unitMl:250,type:'Glass Bottle',material:'Dark Glass',color:'Amber / Brown',closure:'Pourer',tamper:'Not Present'},
+    {id:'V3',productId:'P1',name:'3 L tin',unitMl:3000,type:'Tin',material:'Metal / Tin',color:'Other',closure:'Screw Cap',tamper:'Present'},
+    {id:'V4',productId:'P2',name:'500 ml dark glass',unitMl:500,type:'Glass Bottle',material:'Dark Glass',color:'Dark Green',closure:'Tamper-Evident Cap',tamper:'Present'},
+    {id:'V5',productId:'P2',name:'100 ml gift bottle',unitMl:100,type:'Glass Bottle',material:'Clear Glass',color:'Clear',closure:'Cork',tamper:'Not Present'},
+    {id:'V6',productId:'P3',name:'1 L PET',unitMl:1000,type:'PET',material:'PET / Plastic',color:'Clear',closure:'Flip Cap',tamper:'Unknown'}
+  ],
+  batches:[
+    {id:'B-2025-11-A',type:'Batch',name:'Koura press, 12 Nov 2025',harvest:'2025-11-10',blocked:''},
+    {id:'B-2025-10-E',type:'Batch',name:'Early harvest, 28 Oct 2025',harvest:'2025-10-26',blocked:''},
+    {id:'BB-2026-01',type:'BlendBatch',name:'Old grove blend #1',harvest:'2025-11',blocked:'Unresolved critical correction on press yield (opened 3 Aug 2026)'}
+  ],
+  storages:[
+    {id:'S-T1',name:'Tank 1, stainless 1500 L',batchId:'B-2025-11-A',liters:1180},
+    {id:'S-T2',name:'Tank 2, stainless 600 L',batchId:'B-2025-11-A',liters:340},
+    {id:'S-T3',name:'Tank 3, stainless 1000 L',batchId:'B-2025-10-E',liters:612},
+    {id:'S-D4',name:'Drum 4, 200 L',batchId:'BB-2026-01',liters:190}
+  ],
+  claims:[
+    {id:'C1',text:'Extra virgin olive oil',state:'Supported',note:'Lab report 14 Dec 2025, acidity 0.3%'},
+    {id:'C2',text:'Single estate',state:'Farmer Declared',note:'Declared by farm; no third-party check'},
+    {id:'C3',text:'Cold extracted',state:'Supported with Limitations',note:'Press log shows temperature under 27°C for 91% of runs'},
+    {id:'C4',text:'Organic certified',state:'Expired',note:'Certificate expired 30 Jun 2026; renewal pending'},
+    {id:'C5',text:'High polyphenol',state:'Unsupported',note:'No polyphenol test on file'},
+    {id:'C6',text:'Gold medal 2024',state:'Rejected',note:'Award was for a different product line'},
+    {id:'C7',text:'Early harvest',state:'Supported',note:'Harvest date on batch record'}
+  ],
+  suppliers:[{id:'SU1',name:'Verrerie du Nord'},{id:'SU2',name:'Beirut Closures'},{id:'SU3',name:'Tripoli Print House'},{id:'SU4',name:'Cedar Carton'}],
+  runs:[],packaged:[],movements:[],audit:[],jobs:[],
+  policies:[
+    {cat:'Operational records',days:3650,note:'Packaging runs, batches, storage movements. Corrected or archived, not deleted, through normal workflows.'},
+    {cat:'Evidence photos',days:1825,note:'Photo evidence attached to runs.'},
+    {cat:'Audit trail',days:3650,note:'Audit entries are retained for the full operational window and are never deleted with their parent record.'},
+    {cat:'Notifications',days:90,note:'In-app notifications and reminders.'},
+    {cat:'AI outputs',days:365,note:'Suggestions and summaries generated for a run. Never treated as the record of truth.'},
+    {cat:'Public publication',days:0,note:'Public traceability pages stay live while the lot is on the market; 0 means no automatic expiry.'},
+    {cat:'Temporary exports',days:7,note:'Downloaded reports and CSV exports.'},
+    {cat:'Inventory ledger',days:0,note:'Movement history is a ledger. It is never deleted because a balance reaches zero.'}
+  ]
+};
+
+function seed(){
+  const t=(d)=>new Date(d).toISOString();
+  const r1={id:'PR-0001',name:'Autumn 500 ml run',status:'Completed',retention:'Active',syncState:'synced',dateStart:'2026-08-11',dateEnd:'',time:'08:30',
+    productId:'P1',variantId:'V1',sourceId:'B-2025-11-A',storageIds:['S-T2'],plannedUnits:600,actualUnits:596,withdrawnL:302.5,withdrawType:'Exact',withdrawLow:null,withdrawHigh:null,
+    lossL:4.5,lossReason:'Filling-system retention',lossNote:'Line held roughly 4 L after the last bottle.',
+    pkg:{type:'Glass Bottle',material:'Dark Glass',color:'Dark Green',closure:'Tamper-Evident Cap',tamper:'Present'},
+    sup:{bottle:'SU1',cap:'SU2',label:'SU3',carton:'',lot:'VN-24418'},claimIds:['C1','C2','C3'],labelVersionId:'LV-P1-v2',
+    labelSnapshot:{product:'Koura Extra Virgin',brand:'Dayr al Zaytoun',volume:'500 ml',claims:[{id:'C1',text:'Extra virgin olive oil',state:'Supported'},{id:'C2',text:'Single estate',state:'Farmer Declared'},{id:'C3',text:'Cold extracted',state:'Supported with Limitations'}],lot:'LOT-260811-01',qr:'Printed',legal:'Store away from light and heat. Produced and bottled in Koura, Lebanon.',labelVersion:'LV-P1-v2',frozenAt:t('2026-08-11T15:40:00')},
+    lotCode:'LOT-260811-01',bestBefore:{mode:'rule',text:'Best before 02/2028',reviewed:true},qrStatus:'Printed',
+    evidence:{empty:null,filling:null,finished:{name:'finished_units.jpg',size:412000,data:null,at:t('2026-08-11T15:20:00')},label:{name:'label_closeup.jpg',size:388000,data:null,at:t('2026-08-11T15:22:00')}},
+    cost:640,currency:'USD',verification:'Verified',corrections:[],reservations:{},createdAt:t('2026-08-10T09:00:00'),createdBy:'Rami Haddad',completedAt:t('2026-08-11T15:40:00'),completedBy:'Nour Khoury',packagedId:'PI-0001'};
+  const r2={id:'PR-0002',name:'Reserve 500 ml, first fill',status:'In Progress',retention:'Active',syncState:'synced',dateStart:'2026-08-31',dateEnd:'2026-09-01',time:'',
+    productId:'P2',variantId:'V4',sourceId:'B-2025-10-E',storageIds:['S-T3'],plannedUnits:400,actualUnits:null,withdrawnL:null,withdrawType:'Exact',withdrawLow:null,withdrawHigh:null,lossL:null,lossReason:'',lossNote:'',
+    pkg:{type:'Glass Bottle',material:'Dark Glass',color:'Dark Green',closure:'Tamper-Evident Cap',tamper:'Present'},sup:{bottle:'SU1',cap:'',label:'',carton:'',lot:''},claimIds:['C1','C7','C3'],labelVersionId:'LV-P2-v2',labelSnapshot:null,
+    lotCode:'LOT-260831-01',bestBefore:{mode:'rule',text:'',reviewed:false},qrStatus:'Planned',evidence:{empty:{name:'empty_bottles.jpg',size:301000,data:null,at:t('2026-08-31T07:10:00')},filling:null,finished:null,label:null},
+    cost:null,currency:'USD',verification:'Not Checked',corrections:[],reservations:{'S-T3':200},createdAt:t('2026-08-29T16:00:00'),createdBy:'Nour Khoury',completedAt:null,completedBy:null,packagedId:null};
+  const r3={id:'PR-0003',name:'',status:'Draft',retention:'Active',syncState:'synced',dateStart:'2026-09-03',dateEnd:'',time:'',
+    productId:'P1',variantId:'V3',sourceId:'B-2025-11-A',storageIds:['S-T1'],plannedUnits:null,actualUnits:null,withdrawnL:null,withdrawType:'Exact',withdrawLow:null,withdrawHigh:null,lossL:null,lossReason:'',lossNote:'',
+    pkg:{type:'Tin',material:'Metal / Tin',color:'Other',closure:'Screw Cap',tamper:'Present'},sup:{bottle:'',cap:'',label:'',carton:'',lot:''},claimIds:['C1'],labelVersionId:'LV-P1-v3',labelSnapshot:null,
+    lotCode:'',bestBefore:{mode:'none',text:'',reviewed:false},qrStatus:'Not Used',evidence:{empty:null,filling:null,finished:null,label:null},
+    cost:null,currency:'USD',verification:'Not Checked',corrections:[],reservations:{},createdAt:t('2026-08-30T11:00:00'),createdBy:'Rami Haddad',completedAt:null,completedBy:null,packagedId:null};
+  const r4={id:'PR-0004',name:'Test fill, cancelled',status:'Archived',retention:'Archived',syncState:'synced',dateStart:'2026-07-02',dateEnd:'',time:'',
+    productId:'P1',variantId:'V2',sourceId:'B-2025-11-A',storageIds:['S-T1'],plannedUnits:50,actualUnits:null,withdrawnL:null,withdrawType:'Exact',withdrawLow:null,withdrawHigh:null,lossL:null,lossReason:'',lossNote:'',
+    pkg:{type:'Glass Bottle',material:'Dark Glass',color:'Amber / Brown',closure:'Pourer',tamper:'Not Present'},sup:{bottle:'',cap:'',label:'',carton:'',lot:''},claimIds:[],labelVersionId:'LV-P1-v2',labelSnapshot:null,
+    lotCode:'',bestBefore:{mode:'none',text:'',reviewed:false},qrStatus:'Not Used',evidence:{empty:null,filling:null,finished:null,label:null},
+    cost:null,currency:'USD',verification:'Not Checked',corrections:[],reservations:{},createdAt:t('2026-07-01T10:00:00'),createdBy:'Rami Haddad',completedAt:null,completedBy:null,packagedId:null,archivedAt:t('2026-07-02T12:00:00'),archiveReason:'Trial fill never happened; draft cancelled.'};
+  S.runs.push(r1,r2,r3,r4);
+  S.packaged.push({id:'PI-0001',runId:'PR-0001',productId:'P1',variantId:'V1',sourceId:'B-2025-11-A',lotCode:'LOT-260811-01',units:596,reserved:120,depleted:80,status:'Available',createdAt:r1.completedAt});
+  S.movements.push(
+    {id:'MV-0001',ts:t('2026-08-11T15:40:00'),type:'Withdrawal',storageId:'S-T2',liters:-302.5,ref:'PR-0001',note:'Bulk oil withdrawn for packaging'},
+    {id:'MV-0002',ts:t('2026-08-11T15:40:00'),type:'Packaging loss',storageId:'S-T2',liters:-4.5,ref:'PR-0001',note:'Filling-system retention (included in withdrawal)'},
+    {id:'MV-0003',ts:t('2026-08-11T15:40:00'),type:'Packaged in',packagedId:'PI-0001',units:596,ref:'PR-0001',note:'596 × 500 ml, LOT-260811-01'},
+    {id:'MV-0004',ts:t('2026-08-18T10:00:00'),type:'Reservation',packagedId:'PI-0001',units:-120,ref:'Order stub SO-118',note:'Reserved for wholesale order (owned by sales module)'},
+    {id:'MV-0005',ts:t('2026-08-24T10:00:00'),type:'Depletion',packagedId:'PI-0001',units:-80,ref:'Order stub SO-112',note:'Shipped (owned by fulfilment module, out of scope)'},
+    {id:'MV-0006',ts:t('2026-08-31T07:15:00'),type:'Soft reservation',storageId:'S-T3',liters:-200,ref:'PR-0002',note:'Run started; planned volume reserved until completion'}
+  );
+  const au=(ts,who,role,ent,id,act,detail)=>S.audit.push({ts:t(ts),who,role,ent,id,act,detail});
+  au('2026-08-10T09:00:00','Rami Haddad','Field Staff','run','PR-0001','Created draft','Product Koura Extra Virgin, 500 ml dark glass');
+  au('2026-08-11T08:20:00','Nour Khoury','Production Lead','run','PR-0001','Started run','Reserved 300 L on Tank 2');
+  au('2026-08-11T15:40:00','Nour Khoury','Production Lead','run','PR-0001','Completed run','596 units, 302.5 L withdrawn, loss 4.5 L. Label LV-P1-v2 frozen. Packaged inventory PI-0001 created.');
+  au('2026-08-12T09:05:00','Georges Aoun','Admin','run','PR-0001','Verification set','Not Checked → Verified');
+  au('2026-08-14T10:00:00','Lina Saab','Marketing','product','P1','Label version changed','LV-P1-v2 → LV-P1-v3 (new back label). Historical runs keep their frozen snapshot.');
+  au('2026-08-29T16:00:00','Nour Khoury','Production Lead','run','PR-0002','Created draft','Product Early Harvest Reserve, 500 ml dark glass');
+  au('2026-08-31T07:15:00','Nour Khoury','Production Lead','run','PR-0002','Started run','Reserved 200 L on Tank 3');
+  au('2026-08-30T11:00:00','Rami Haddad','Field Staff','run','PR-0003','Created draft','Product Koura Extra Virgin, 3 L tin');
+  au('2026-07-02T12:00:00','Rami Haddad','Field Staff','run','PR-0004','Cancelled draft','Archived. No inventory was affected.');
+  au('2026-08-01T09:00:00','Georges Aoun','Admin','policy','Temporary exports','Retention window changed','30 → 7 days');
+  S.jobs.push({id:'DJ-0001',entType:'run',entId:'PR-0004',label:'PR-0004 Test fill, cancelled (Archived draft)',requestedBy:'Georges Aoun',requestedAt:t('2026-08-25T09:00:00'),waitingDays:14,readyAt:t('2026-09-08T09:00:00'),status:'Waiting',reason:'Trial record with no operational value',log:[{ts:t('2026-08-25T09:00:00'),s:'Requested'},{ts:t('2026-08-25T09:00:01'),s:'Waiting'}]});
+  S.audit.push({ts:t('2026-08-25T09:00:00'),who:'Georges Aoun',role:'Admin',ent:'job',id:'DJ-0001',act:'Deletion requested',detail:'PR-0004, waiting period 14 days'});
+}
+seed();
+
+/* ========================= HELPERS ========================= */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const perm=()=>ROLES[S.role];
+const me=()=>ROLES[S.role].user;
+const nowISO=()=>new Date().toISOString();
+const uid=p=>p+'-'+String(++S.seq[p]).padStart(4,'0');
+const fmtL=n=>n==null||isNaN(n)?'–':(Math.round(n*10)/10).toLocaleString('en',{maximumFractionDigits:1})+' L';
+const fmtN=n=>n==null||isNaN(n)?'–':Number(n).toLocaleString('en');
+const fmtD=s=>s?new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'–';
+const fmtDT=s=>s?new Date(s).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'–';
+const prod=id=>S.products.find(p=>p.id===id);
+const variant=id=>S.variants.find(v=>v.id===id);
+const batch=id=>S.batches.find(b=>b.id===id);
+const storage=id=>S.storages.find(s=>s.id===id);
+const claim=id=>S.claims.find(c=>c.id===id);
+const supplier=id=>(S.suppliers.find(s=>s.id===id)||{}).name||'';
+const run=id=>S.runs.find(r=>r.id===id);
+const audit=(ent,id,act,detail)=>S.audit.push({ts:nowISO(),who:me(),role:S.role,ent,id,act,detail});
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;$('#toastRoot').replaceChildren(t);setTimeout(()=>t.remove(),3200)}
+function reservedOn(stId,excludeRunId){return S.runs.filter(r=>r.status==='In Progress'&&r.id!==excludeRunId).reduce((a,r)=>a+(r.reservations[stId]||0),0)}
+function storageAvail(st,excl){return Math.max(0,st.liters-reservedOn(st.id,excl))}
+function batchStorages(bId){return S.storages.filter(s=>s.batchId===bId)}
+function batchAvail(bId,excl){return batchStorages(bId).reduce((a,s)=>a+storageAvail(s,excl),0)}
+function theoreticalL(r){const v=variant(r.variantId);const n=r.actualUnits??r.plannedUnits;return v&&n?v.unitMl*n/1000:null}
+function badge(status){
+  const m={'Draft':'stone','Ready for Review':'blue','In Progress':'amber','Completed':'olive','Correction Requested':'red','Archived':'stone',
+    'Requested':'stone','Waiting':'blue','Cancelled':'stone','Ready':'amber','Processing':'amber','Partial':'red','Failed':'red','Admin Review':'plum',
+    'Active':'olive','Pending Deletion':'plum','Deleted':'red','Retained by Policy':'oil','Anonymized':'blue',
+    'Not Checked':'stone','Verified':'olive','Flagged':'red',
+    'Supported':'olive','Farmer Declared':'oil','Supported with Limitations':'amber','Unsupported':'red','Rejected':'red','Expired':'red','Superseded':'stone','Discontinued':'stone'};
+  return `<span class="badge b-${m[status]||'stone'}">${esc(status)}</span>`;
+}
+function lotSuggest(dateStr){const d=new Date(dateStr||Date.now());const ymd=String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  let n=1;while(S.runs.some(r=>r.lotCode===S.settings.lotPattern.replace('{YYMMDD}',ymd).replace('{N}',String(n).padStart(2,'0'))))n++;
+  return S.settings.lotPattern.replace('{YYMMDD}',ymd).replace('{N}',String(n).padStart(2,'0'))}
+function bbFromRule(dateStr){if(!S.settings.bbRuleOn||!dateStr)return '';const d=new Date(dateStr);d.setMonth(d.getMonth()+S.settings.bbMonths);return 'Best before '+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()}
+function claimIssues(r){const pol=S.settings.claimPolicy;return (r.claimIds||[]).map(claim).filter(c=>c&&!ELIGIBLE.has(c.state)).map(c=>({c,block:pol==='block'}))}
+function dupLot(code,exclId){return code&&S.runs.filter(r=>r.id!==exclId&&r.lotCode&&r.lotCode.toLowerCase()===code.toLowerCase()).map(r=>r.id)}
+function dupEvidence(ev,exclId){if(!ev)return [];const out=[];S.runs.forEach(r=>{if(r.id===exclId)return;Object.values(r.evidence||{}).forEach(e=>{if(e&&e.name===ev.name&&e.size===ev.size)out.push(r.id)})});return out}
+function evidenceCount(r){return Object.values(r.evidence||{}).filter(Boolean).length}
+function newRun(){return {id:null,name:'',status:'Draft',retention:'Active',syncState:'synced',dateStart:new Date().toISOString().slice(0,10),dateEnd:'',time:'',productId:'',variantId:'',sourceId:'',storageIds:[],plannedUnits:null,actualUnits:null,withdrawnL:null,withdrawType:'Exact',withdrawLow:null,withdrawHigh:null,lossL:null,lossReason:'',lossNote:'',pkg:{type:'',material:'',color:'',closure:'',tamper:''},sup:{bottle:'',cap:'',label:'',carton:'',lot:''},claimIds:[],labelVersionId:'',labelSnapshot:null,lotCode:'',bestBefore:{mode:'none',text:'',reviewed:false},qrStatus:'Not Used',evidence:{empty:null,filling:null,finished:null,label:null},cost:null,currency:S.settings.currency,verification:'Not Checked',corrections:[],reservations:{},createdAt:null,createdBy:'',completedAt:null,completedBy:null,packagedId:null}}
+
+
+/* ========================= HOME ========================= */
+const SPEC={
+  title:'Lebanese Olive Farmer AI Platform, Developer System Requirements Specification v1.0',
+  question:'What does it take for a small farmer to prove their oil is what they say it is? Extra virgin is easy to claim, hard to prove and expensive to verify with laboratory equipment most small farms do not have. A Lebanese olive farmer can grow excellent fruit, process it carefully and still have no structured way to demonstrate quality, trace it back to the grove, or explain to a buyer why the oil is priced the way it is.',
+  approach:'The specification is built the way a database or a contract would be: define what things are before deciding what the screens do with them. It starts with identity and permissions, follows the physical life of the oil through harvest, mill, batch and storage, layers trust and business logic on top, and finishes with the platform mechanics (privacy, backups, retention, testing) that most projects skip. It is written for a farmer with limited technical background, on a weak internet connection, without letting AI quietly make decisions for them.',
+  chain:[
+    ['Harvest','Olives collected from a specific farm and plot during one period. Traceability begins here.'],
+    ['Processing','Olives become oil at a mill; temperature and timing are recorded because they shape quality.'],
+    ['Batch','One traceable quantity of oil from one processing run. Blend batches combine eligible batches.'],
+    ['Chemical proof','Lab evidence attached to a batch. AI can read the report, but nothing is final until a person confirms it.'],
+    ['Verification','Consistency checks: GPS mismatches, duplicate files, image manipulation. No single authenticity score, only per-check confidence.'],
+    ['Product claims','Extra virgin, single origin, cold extracted and the rest move from Proposed to Supported only once evidence exists.'],
+    ['Packaging','Bulk oil becomes labelled, sellable units with the claims frozen on the label. This is the chapter this app builds.']
+  ],
+  insights:[
+    ['On authenticity','No single trust score','Verification reports completeness and strength per check instead of collapsing evidence into one misleading number.'],
+    ['On AI','AI explains. It does not decide.','Every AI module gives a confidence level and an explanation. None may edit records, approve workflows or act without a person confirming first.'],
+    ['On real-world data','Built for farmers, not spreadsheets','Fields accept exact values, estimates, ranges or unknown, because forcing a precise number a farmer does not have produces bad data.'],
+    ['On infrastructure','Designed for weak internet','Drafts are saved locally when connectivity is poor and the platform targets the browser rather than native apps.']
+  ],
+  phases:[
+    ['Foundation',[['C01','Introduction'],['C02','System design principles'],['C03','Technology stack'],['C04','Users, roles and permissions'],['C05','Website standards'],['C06','Authentication and account security']]],
+    ['Farm and identity',[['C07','Farm identity'],['C08','Farm profile'],['C09','Business profile'],['C10','Products']]],
+    ['Production and traceability',[['C11','Harvest'],['C12','Processing'],['C13','Batch and blend batch'],['C14','Chemical proof'],['C15','Storage']]],
+    ['Trust and quality',[['C16','Verification'],['C17','Packaging'],['C18','Quality assessment'],['C19','Product claims']]],
+    ['Business and AI',[['C20','Supply side'],['C21','Marketing'],['C22','Pricing'],['C23','Farm advisor']]],
+    ['Platform operations',[['C24','Notifications'],['C25','Dashboard'],['C26','Admin'],['C27','Audit and monitoring'],['C28','Data retention and deletion'],['C29','Privacy and data protection'],['C30','Backup, recovery and continuity'],['C31','Deployment and release management'],['C32','Testing and quality assurance'],['C33','APIs and external services'],['C34','Data model and schema']]]
+  ],
+  here:['C17','C28'],
+  roadmap:[
+    ['Marketplace','A buyer-facing marketplace and supplier portal are excluded from V1. The platform is an operations and trust tool first, not a sales channel.'],
+    ['Autonomy','No AI agents acting in the background. Every AI module produces a recommendation for a human to act on.'],
+    ['Hardware','No IoT devices or continuous competitor-price scraping. V1 relies on farmer-entered data and admin-maintained reference ranges.'],
+    ['Integration','No government or ERP integrations; V1 stands alone rather than depending on external institutional data.'],
+    ['Distribution','No social media auto-publishing. Marketing content is drafted with AI help but a person always posts it.']
+  ],
+  users:{primary:'Lebanese olive farmers, including those with limited technical experience, working in desktop or mobile browsers on connections the spec explicitly designs around.',secondary:'Family members, farm managers, production staff and marketing staff sharing one farm under different, configurable roles.',success:'A farmer can register a farm, record a harvest and processing run, build batches, generate a quality assessment and pricing report, and use the farm advisor, entirely through a browser.'}
+};
+
+/* Founder and business details: replace the placeholder values below with the real ones. */
+const ABOUT={
+  business:S.farm.name,
+  region:S.farm.region,
+  founder:{name:'Ziad Karim Tabbouche',role:'Founder',initials:'ZT',since:'Feb 2026 to present'},
+  established:'2026'
+};
+const PH=s=>s.startsWith('[')?`<span class="ph">${esc(s)}</span>`:esc(s);
+function viewHome(){
+  const done=S.runs.filter(r=>r.status==='Completed').length,open=S.runs.filter(r=>['Draft','Ready for Review','In Progress'].includes(r.status)).length;
+  const bulk=S.storages.reduce((a,s)=>a+s.liters,0),units=S.packaged.reduce((a,x)=>a+x.units-x.reserved-x.depleted,0);
+  return `<div class="hero"><div class="eyebrow">${esc(S.farm.name)} · ${esc(S.farm.region)}</div><h1>From the tank to the labelled bottle, on record.</h1>
+  <p>Dayr al Zaytoun's Lebanese Olive Oil app is a packaging log for small and mid-size olive oil farms. Staff record each bottling run on a phone, often in the field, and the app keeps bulk oil, finished stock, labels and evidence in one traceable chain.</p>
+  <div class="btnrow"><a class="btn" href="#runs">Open packaging runs</a><a class="btn ghost" href="#run/new">Start a run</a></div></div>
+
+  <div class="card"><div class="bd"><div class="grid2 num">
+    <div class="readonly"><span>Bulk oil in storage</span><span class="v">${fmtL(bulk)}</span></div>
+    <div class="readonly"><span>Sellable units</span><span class="v">${fmtN(units)}</span></div>
+    <div class="readonly"><span>Completed runs</span><span class="v">${done}</span></div>
+    <div class="readonly"><span>Open runs</span><span class="v">${open}</span></div></div></div></div>
+
+  <div class="card"><div class="hd"><h2>The bigger picture</h2></div><div class="bd">
+  <p class="small">This app is one working piece of a larger design: a ${SPEC.phases.reduce((a,p)=>a+p[1].length,0)}-chapter Developer System Requirements Specification for an AI-assisted platform for Lebanese olive farmers. It builds two of those chapters, Packaging (C17) and Data Retention and Deletion (C28), as a usable prototype.</p>
+  <div class="stats" style="margin:10px 0"><div class="stat"><div class="n">${SPEC.phases.reduce((a,p)=>a+p[1].length,0)}</div><div class="l">Specification chapters</div></div><div class="stat"><div class="n">6</div><div class="l">Platform phases</div></div><div class="stat"><div class="n">0</div><div class="l">Autonomous AI decisions permitted</div></div><div class="stat"><div class="n">2</div><div class="l">Chapters built here</div></div></div>
+  <h3 style="margin-top:8px">The question</h3><p class="small">${esc(SPEC.question)}</p>
+  <h3 style="margin-top:10px">The approach</h3><p class="small">${esc(SPEC.approach)}</p>
+  </div></div>
+
+  <div class="card"><div class="hd"><h2>The trust chain</h2><span class="small muted">from one olive to a claim a customer can believe</span></div><div class="bd">
+  <div class="chain">${SPEC.chain.map(([n,b],i)=>`<div class="cs ${i===SPEC.chain.length-1?'here':''}"><div class="idx">Stage ${i+1}${i===SPEC.chain.length-1?' · this app':''}</div><b>${esc(n)}</b>${esc(b)}</div>`).join('')}</div>
+  <p class="tiny muted" style="margin-top:6px">Each stage is a domain defined in the specification, in the order the oil actually moves.</p></div></div>
+
+  <div class="card"><div class="hd"><h2>How a packaging run works here</h2></div><div class="bd">
+  <p class="small muted" style="margin-bottom:10px">One run is one physical event: oil from a single batch or blend batch, filled into one product and one packaging variant. Packaging never creates a new batch; every bottle keeps its lineage back to the source oil.</p>
+  <div class="flow">
+    <div class="st"><span class="k">1</span><b>Draft</b>Pick the product and variant, the source batch and the tanks holding it. Add a planned count and the app shows the oil needed. Nothing moves yet, and drafts work offline.</div>
+    <div class="st"><span class="k">2</span><b>Label and evidence</b>Choose only claims that are currently supported, set the lot code and date label, and photograph the empty packaging, the fill, the finished units and the label.</div>
+    <div class="st"><span class="k">3</span><b>Start</b>A Production Lead starts the run, which reserves the planned volume so another run cannot take the same oil.</div>
+    <div class="st"><span class="k">4</span><b>Complete</b>Enter actual units and oil withdrawn. The app reconciles withdrawn against packaged plus loss, previews the inventory impact, then writes withdrawal, loss, packaged stock, label snapshot and audit entry in one step.</div>
+  </div></div></div>
+
+  <div class="two">
+  <div class="card"><div class="hd"><h3>Rules the app enforces</h3></div><div class="bd"><ul class="plain">
+    <li>One source batch and one product plus variant per run. Mixing products means a second run.</li>
+    <li>Every tank used must hold the same source batch.</li>
+    <li>Unit volume always comes from the packaging variant, never typed in.</li>
+    <li>Planned counts are non-binding; only completion moves inventory.</li>
+    <li>Withdrawn oil must equal packaged oil plus documented loss within a configurable tolerance.</li>
+    <li>The label and its claims are frozen at completion. Later label changes never rewrite history.</li>
+    <li>Duplicate lot codes and duplicate photos warn, they never silently block.</li>
+    <li>Completed runs are corrected through correction records, not edited, and cannot be reversed as if they never happened.</li>
+    <li>QR codes resolve to a public traceability page for the printed lot code, never to internal ids.</li>
+    <li>The app does not assess legal fill volume, metrology or shelf-life requirements.</li>
+  </ul></div></div>
+  <div class="card"><div class="hd"><h3>Who does what</h3></div><div class="bd"><ul class="plain">
+    <li><b>Field Staff</b> create and edit drafts and add evidence.</li>
+    <li><b>Production Lead</b> starts and completes runs, reviews corrections, verifies and archives.</li>
+    <li><b>Marketing</b> manages claim support states and label versions. No inventory rights.</li>
+    <li><b>Admin</b> holds all of the above plus retention policies, business rules and deletion requests.</li>
+  </ul><p class="small muted" style="margin-top:8px">Inventory permission and marketing permission are separate on purpose. Switch users from the menu at the top to try each view.</p>
+  <h3 style="margin-top:12px">Who the platform is for</h3><p class="small"><b>Primary:</b> ${esc(SPEC.users.primary)}</p><p class="small"><b>Secondary:</b> ${esc(SPEC.users.secondary)}</p><p class="small"><b>Success means:</b> ${esc(SPEC.users.success)}</p></div></div>
+  </div>
+
+  <div class="card"><div class="hd"><h2>Design principles</h2><span class="small muted">what makes this more than a feature list</span></div><div class="bd"><div class="two">${SPEC.insights.map(([m,t,b])=>`<div class="insight"><div class="m">${esc(m)}</div><b>${esc(t)}</b><p>${esc(b)}</p></div>`).join('')}</div>
+  <p class="small muted">You can see these in this app: withdrawn oil can be Exact, Estimated or a Range; materials allow Unknown; the date label comes from a farm rule a person reviews, never from an AI guess; drafts queue offline.</p></div></div>
+
+  <div class="card"><div class="hd"><h3>Data retention and deletion</h3></div><div class="bd"><ul class="plain">
+    <li>Every record carries a retention state: ${RETENTION.map(badge).join(' ')}</li>
+    <li><b>Archive is not deletion.</b> Archived records keep their ids and relationships and can be shown again at any time.</li>
+    <li>Deletion is a workflow: request, waiting period, job, tombstone. Requests can be cancelled until the job is ready.</li>
+    <li>Completed runs and storage movements are finalized history. Deleting them is admin-gated and leaves the operational record retained by policy; only evidence and personal fields are removed.</li>
+    <li>The inventory ledger is never deleted because a balance reaches zero, and removing a user never removes shared farm history.</li>
+    <li>Policy changes are audit-logged with who, when, old value and new value.</li>
+  </ul></div></div>
+
+  <div class="card"><div class="hd"><h2>Chapter map</h2><span class="small muted">${SPEC.phases.reduce((a,p)=>a+p[1].length,0)} chapters in 6 phases</span></div><div class="bd">
+  ${SPEC.phases.map(([n,ch],i)=>`<details ${i===3||i===5?'open':''}><summary>${String(i+1).padStart(2,'0')} · ${esc(n)} <span class="tag">${ch.length}</span></summary>${ch.map(([id,t])=>`<div class="chap ${SPEC.here.includes(id)?'here':''}"><span class="cid">${id}</span><span>${esc(t)}${SPEC.here.includes(id)?' <span class="tag auto">built in this app</span>':''}</span></div>`).join('')}</details>`).join('')}
+  </div></div>
+
+  <div class="card"><div class="hd"><h3>What Version 1 deliberately leaves out</h3></div><div class="bd"><p class="small muted">The specification is clear about its own boundaries. These are a roadmap for after a working V1, not gaps.</p><div class="two">${SPEC.roadmap.map(([t,b])=>`<div class="insight" style="border-left-color:var(--stone)"><b>${esc(t)}</b><p>${esc(b)}</p></div>`).join('')}</div>
+  <p class="small">For this packaging module specifically: no bottling-line or hardware integration, no barcode or RFID warehouse system, no full MRP or ERP, no order fulfilment or shipping, no automated compliance submissions, no legal-hold suite.</p></div></div>
+
+  <div class="card"><div class="hd"><h2>About the project</h2></div><div class="bd">
+    <div class="founder"><div class="ava">${esc(ABOUT.founder.initials)}</div><div class="fx"><h3>${esc(ABOUT.founder.name)}</h3><div class="role">${esc(ABOUT.founder.role)} · ${esc(ABOUT.founder.since)}</div></div></div>
+    <dl class="kv" style="margin-top:12px"><dt>Source</dt><dd class="small">${esc(SPEC.title)}. Built as a passion project; all specification material is original.</dd><dt>Business</dt><dd>${PH(ABOUT.business)}</dd><dt>Region</dt><dd>${esc(ABOUT.region)}</dd><dt>Established</dt><dd>${PH(ABOUT.established)}</dd></dl>
+  </div></div>`;
+}
+
+/* ========================= ROUTER ========================= */
+const NAV=[['#home','Home','⌂'],['#runs','Runs','▤'],['#inventory','Inventory','◫'],['#labels','Labels','◈'],['#admin','Admin','⚙']];
+function nav(){
+  const h=location.hash||'#home';const key=h.split('/')[0];
+  const items=NAV.filter(n=>n[0]!=='#labels'||perm().claims);
+  $('#sideNav').innerHTML=items.map(n=>`<a href="${n[0]}" class="${key===n[0]?'on':''}">${n[1]}</a>`).join('');
+  $('#bottomNav').innerHTML=items.map(n=>`<a href="${n[0]}" class="${key===n[0]?'on':''}"><span>${n[2]}</span>${n[1]}</a>`).join('');
+}
+function render(){
+  nav();
+  const h=location.hash||'#home';const parts=h.split('/');const app=$('#app');
+  try{
+    if(parts[0]==='#home')app.innerHTML=viewHome();
+    else if(parts[0]==='#runs')app.innerHTML=viewList();
+    else if(parts[0]==='#run'&&parts[1]==='new')app.innerHTML=viewWizard(null);
+    else if(parts[0]==='#run'&&parts[2]==='edit')app.innerHTML=viewWizard(parts[1]);
+    else if(parts[0]==='#run')app.innerHTML=viewDetail(parts[1]);
+    else if(parts[0]==='#inventory')app.innerHTML=viewInventory();
+    else if(parts[0]==='#labels')app.innerHTML=viewLabels();
+    else if(parts[0]==='#admin')app.innerHTML=viewAdmin(parts[1]||'retention');
+    else if(parts[0]==='#trace')app.innerHTML=viewTrace(decodeURIComponent(parts[1]||''));
+    else app.innerHTML=viewHome();
+  }catch(e){app.innerHTML=`<div class="banner block">Something went wrong rendering this screen: ${esc(e.message)}</div>`;console.error(e)}
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',render);
+/* ========================= RUN LIST ========================= */
+const F={status:'',product:'',source:'',sort:'date_desc',archived:false,q:''};
+function viewList(){
+  let rows=S.runs.filter(r=>r.retention!=='Deleted');
+  if(!F.archived)rows=rows.filter(r=>r.status!=='Archived');
+  if(F.status)rows=rows.filter(r=>r.status===F.status);
+  if(F.product)rows=rows.filter(r=>r.productId===F.product);
+  if(F.source)rows=rows.filter(r=>r.sourceId===F.source);
+  if(F.q){const q=F.q.toLowerCase();rows=rows.filter(r=>(r.id+' '+r.name+' '+r.lotCode).toLowerCase().includes(q))}
+  rows.sort((a,b)=>{if(F.sort==='date_asc')return a.dateStart.localeCompare(b.dateStart);if(F.sort==='status')return RUN_STATUS.indexOf(a.status)-RUN_STATUS.indexOf(b.status);if(F.sort==='product')return (prod(a.productId)||{name:''}).name.localeCompare((prod(b.productId)||{name:''}).name);return b.dateStart.localeCompare(a.dateStart)});
+  const canCreate=perm().draft;
+  const queued=S.queue.length;
+  return `<div class="pagehead"><div><h1>Packaging runs</h1><div class="sub">${S.farm.name}, ${S.farm.region}${queued?` · <span class="tag queued">${queued} queued offline</span>`:''}</div></div>
+    <a class="btn primary" href="#run/new" ${canCreate?'':'aria-disabled="true" onclick="event.preventDefault();toast(\'Your role cannot create runs. Ask a Field Staff or Production Lead user.\')"'}>New run</a></div>
+  <div class="toolbar">
+    <input type="search" placeholder="Search id, name, lot code" value="${esc(F.q)}" oninput="F.q=this.value;render();this.focus();this.setSelectionRange(this.value.length,this.value.length)">
+    <select onchange="F.status=this.value;render()"><option value="">All statuses</option>${RUN_STATUS.map(s=>`<option ${F.status===s?'selected':''}>${s}</option>`).join('')}</select>
+    <select onchange="F.product=this.value;render()"><option value="">All products</option>${S.products.map(p=>`<option value="${p.id}" ${F.product===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>
+    <select onchange="F.source=this.value;render()"><option value="">All sources</option>${S.batches.map(b=>`<option value="${b.id}" ${F.source===b.id?'selected':''}>${b.id}</option>`).join('')}</select>
+    <select onchange="F.sort=this.value;render()"><option value="date_desc" ${F.sort==='date_desc'?'selected':''}>Newest first</option><option value="date_asc" ${F.sort==='date_asc'?'selected':''}>Oldest first</option><option value="status" ${F.sort==='status'?'selected':''}>By status</option><option value="product" ${F.sort==='product'?'selected':''}>By product</option></select>
+    <label class="small" style="display:flex;gap:5px;align-items:center"><input type="checkbox" ${F.archived?'checked':''} onchange="F.archived=this.checked;render()"> Show archived</label>
+  </div>
+  ${rows.length?rows.map(r=>{const v=variant(r.variantId),p=prod(r.productId);const th=theoreticalL(r);
+    return `<a class="runcard" href="#run/${r.id}"><div class="l1"><b>${esc(r.name||r.id)}</b>${badge(r.status)}</div>
+    <div class="l2">${r.id} · ${esc(p?p.name:'No product yet')}${v?' · '+v.name:''} · ${fmtD(r.dateStart)}${r.dateEnd?' to '+fmtD(r.dateEnd):''}</div>
+    <div class="l2 num">${r.sourceId?'Source '+r.sourceId:'No source yet'}${r.actualUnits?` · ${fmtN(r.actualUnits)} units packed`:r.plannedUnits?` · ${fmtN(r.plannedUnits)} planned (${fmtL(th)})`:''}${r.lotCode?' · '+esc(r.lotCode):''}${r.syncState==='queued'?' <span class="tag queued">queued</span>':''}${r.retention!=='Active'&&r.retention!=='Archived'?' '+badge(r.retention):''}</div></a>`}).join(''):
+    `<div class="card"><div class="empty">No runs match these filters.${canCreate?' Start a new run when oil is about to be bottled.':''}</div></div>`}`;
+}
+
+/* ========================= RUN DETAIL ========================= */
+function viewDetail(id){
+  const r=run(id);if(!r)return `<div class="banner block">Run ${esc(id)} was not found.</div><a class="btn" href="#runs">Back to runs</a>`;
+  if(r.retention==='Deleted')return `<div class="pagehead"><div><h1>${r.id}</h1><div class="sub">Deletion tombstone</div></div>${badge('Deleted')}</div>
+    <div class="card"><div class="bd"><p>This record was deleted through the retention workflow on ${fmtDT(r.tomb.at)} (job ${r.tomb.job}). Only this minimal marker is kept so the record cannot be restored from a backup by accident.</p>
+    <p class="small muted">Audit entries for this record are retained under the audit policy.</p></div></div>${auditBlock('run',r.id)}<a class="btn" href="#runs">Back to runs</a>`;
+  const p=prod(r.productId),v=variant(r.variantId),b=batch(r.sourceId);const th=theoreticalL(r);const pi=S.packaged.find(x=>x.id===r.packagedId);
+  const P=perm();const st=r.status;const online=S.online;
+  const acts=[];
+  if((st==='Draft'||st==='Ready for Review')&&P.draft)acts.push(`<a class="btn" href="#run/${r.id}/edit">Edit draft</a>`);
+  if(st==='Draft'&&P.draft)acts.push(`<button class="btn" onclick="A.setStatus('${r.id}','Ready for Review')">Mark ready for review</button>`);
+  if((st==='Draft'||st==='Ready for Review')&&P.complete)acts.push(`<button class="btn primary" onclick="A.startRun('${r.id}')">Start run</button>`);
+  if((st==='Draft'||st==='Ready for Review')&&P.draft)acts.push(`<button class="btn danger" onclick="A.cancelDraft('${r.id}')">Cancel draft</button>`);
+  if(st==='In Progress'&&P.complete)acts.push(`<button class="btn primary" ${online?'':'disabled title="Completing a run needs a connection"'} onclick="A.openComplete('${r.id}')">Complete run</button>`);
+  if(st==='In Progress'&&P.complete)acts.push(`<button class="btn" onclick="A.stopRun('${r.id}')">Back to draft</button>`);
+  if(st==='Completed'&&P.draft)acts.push(`<button class="btn" onclick="A.openCorrection('${r.id}')">Request correction</button>`);
+  if(st==='Correction Requested'&&P.complete)acts.push(`<button class="btn primary" onclick="A.applyCorrection('${r.id}')">Review correction</button>`);
+  if(st==='Completed'&&P.complete)acts.push(`<button class="btn" onclick="A.archive('${r.id}')">Archive</button>`);
+  if(st==='Archived'&&P.complete)acts.push(`<button class="btn" onclick="A.unarchive('${r.id}')">Restore from archive</button>`);
+  if(P.admin&&(r.retention==='Active'||r.retention==='Archived'))acts.push(`<button class="btn danger sm" onclick="A.requestDeletion('run','${r.id}')">Request deletion</button>`);
+  const claimsBanner=st!=='Completed'&&st!=='Archived'?claimIssues(r).map(i=>`<div class="banner ${i.block?'block':'warn'}">Claim "${esc(i.c.text)}" is ${i.c.state}. ${i.block?'Completion is blocked until it is removed from the label or its support state changes.':'High risk: complete only if Marketing has approved this label.'}</div>`).join(''):'';
+  const offline=st==='In Progress'&&!online?`<div class="banner warn">Offline. You can still add evidence photos; completing the run needs a connection so inventory is updated in one step.</div>`:'';
+  const snap=r.labelSnapshot;
+  return `<div class="pagehead"><div><h1>${esc(r.name||r.id)}</h1><div class="sub">${r.id} · created ${fmtD(r.createdAt)} by ${esc(r.createdBy)}${r.syncState==='queued'?' · <span class="tag queued">queued offline</span>':''}</div></div><div>${badge(st)} ${r.retention!=='Active'?badge(r.retention):''}</div></div>
+  ${claimsBanner}${offline}${r.retention==='Pending Deletion'?'<div class="banner info">A deletion request is open for this record. It stays fully readable until the job runs.</div>':''}
+  <div class="btnrow" style="margin:0 0 12px">${acts.join('')}</div>
+
+  <div class="card"><div class="hd"><h3>Run</h3></div><div class="bd"><dl class="kv">
+    <dt>Product</dt><dd>${p?esc(p.name)+' <span class="small muted">('+p.brand+')</span> '+(p.status!=='Active'?badge(p.status):''):'–'}</dd>
+    <dt>Packaging variant</dt><dd>${v?v.name+' <span class="tag auto">'+v.unitMl+' ml per unit</span>':'–'}</dd>
+    <dt>Date</dt><dd>${fmtD(r.dateStart)}${r.dateEnd?' to '+fmtD(r.dateEnd):''}${r.time?' · '+r.time:''}</dd>
+    <dt>Source</dt><dd>${b?`${b.id} <span class="small muted">${b.type==='BlendBatch'?'Blend batch':'Batch'} · ${esc(b.name)}</span>`:'–'}</dd>
+    <dt>Storage</dt><dd>${r.storageIds.length?r.storageIds.map(sid=>{const s=storage(sid);return s?esc(s.name):sid}).join('<br>'):'–'}</dd>
+    <dt>Verification</dt><dd>${badge(r.verification)} ${P.complete&&(st==='Completed'||st==='Correction Requested')?`<select class="small" onchange="A.verify('${r.id}',this.value)">${VERIF.map(x=>`<option ${x===r.verification?'selected':''}>${x}</option>`).join('')}</select>`:''}</dd>
+  </dl></div></div>
+
+  <div class="card"><div class="hd"><h3>Oil and units</h3></div><div class="bd">
+    <div class="grid2">
+      <div class="readonly"><span>Planned units</span><span class="v num">${fmtN(r.plannedUnits)}</span></div>
+      <div class="readonly"><span>Actual units</span><span class="v num">${fmtN(r.actualUnits)}</span></div>
+      <div class="readonly"><span>Theoretical oil <span class="tag auto">auto</span></span><span class="v num">${fmtL(th)}</span></div>
+      <div class="readonly"><span>Oil withdrawn${r.withdrawType!=='Exact'?' <span class="tag">'+r.withdrawType+'</span>':''}</span><span class="v num">${fmtL(r.withdrawnL)}</span></div>
+    </div>
+    ${r.withdrawType==='Range'&&r.withdrawLow!=null?`<p class="small muted">Recorded as a range ${fmtL(r.withdrawLow)} to ${fmtL(r.withdrawHigh)}; the midpoint is used for inventory.</p>`:''}
+    ${r.lossL!=null?ledger(r.withdrawnL,th,r.lossL)+`<p class="small"><b>Loss reason:</b> ${esc(r.lossReason)}${r.lossNote?' · '+esc(r.lossNote):''}</p>`:'<p class="small muted">Loss is calculated automatically at completion as withdrawn minus packaged volume.</p>'}
+    ${r.cost!=null?`<p class="small num"><b>Packaging cost:</b> ${fmtN(r.cost)} ${r.currency} · <b>per unit</b> ${r.actualUnits?(r.cost/r.actualUnits).toFixed(2):'–'} ${r.currency} <span class="tag auto">auto</span></p>`:''}
+  </div></div>
+
+  <div class="card"><div class="hd"><h3>Materials</h3></div><div class="bd"><dl class="kv">
+    <dt>Package</dt><dd>${esc(r.pkg.type||'–')} · ${esc(r.pkg.material||'–')} · ${esc(r.pkg.color||'–')}</dd>
+    <dt>Closure</dt><dd>${esc(r.pkg.closure||'–')} · tamper evidence ${esc(r.pkg.tamper||'Unknown')}</dd>
+    <dt>Suppliers</dt><dd>${['bottle','cap','label','carton'].filter(k=>r.sup[k]).map(k=>k+': '+esc(supplier(r.sup[k]))).join(', ')||'<span class="muted">none recorded</span>'}${r.sup.lot?' · supplier lot '+esc(r.sup.lot):''}</dd>
+  </dl></div></div>
+
+  <div class="card"><div class="hd"><h3>Label</h3>${snap?'<span class="tag">frozen at completion</span>':'<span class="tag">live, not yet frozen</span>'}</div><div class="bd">
+    ${snap?`<dl class="kv"><dt>Product on label</dt><dd>${esc(snap.product)} · ${esc(snap.brand)} · ${esc(snap.volume)}</dd><dt>Label version</dt><dd>${esc(snap.labelVersion)}${p&&p.labelVersion!==snap.labelVersion?` <span class="small muted">(product now on ${p.labelVersion}; this run keeps its snapshot)</span>`:''}</dd>
+      <dt>Claims</dt><dd>${snap.claims.length?snap.claims.map(c=>esc(c.text)+' '+badge(c.state)).join('<br>'):'<span class="muted">none</span>'}</dd><dt>Lot code</dt><dd class="mono">${esc(snap.lot||'–')}</dd><dt>Date label</dt><dd>${esc(r.bestBefore.text||'–')}</dd><dt>QR</dt><dd>${esc(snap.qr)}${r.lotCode&&['Generated','Printed','Active'].includes(r.qrStatus)?` · <a href="#trace/${encodeURIComponent(r.lotCode)}">preview public page</a>`:''}</dd><dt>Legal text</dt><dd class="small">${esc(snap.legal)}</dd></dl>`
+    :`<dl class="kv"><dt>Label version</dt><dd>${esc(r.labelVersionId||(p?p.labelVersion:'–'))}</dd><dt>Claims selected</dt><dd>${r.claimIds.length?r.claimIds.map(claim).filter(Boolean).map(c=>esc(c.text)+' '+badge(c.state)).join('<br>'):'<span class="muted">none</span>'}</dd><dt>Lot code</dt><dd class="mono">${esc(r.lotCode||'–')}</dd><dt>Date label</dt><dd>${r.bestBefore.mode==='none'?'<span class="muted">not set</span>':esc(r.bestBefore.text||bbFromRule(r.dateStart))+(r.bestBefore.reviewed?' <span class="tag">reviewed</span>':' <span class="tag queued">needs review</span>')}</dd><dt>QR</dt><dd>${esc(r.qrStatus)}</dd></dl>`}
+  </div></div>
+
+  <div class="card"><div class="hd"><h3>Evidence</h3><span class="small muted">${evidenceCount(r)} of 4, all optional</span></div><div class="bd">
+    <div class="evgrid">${EV_SLOTS.map(([k,l])=>evSlot(r,k,l,(st==='In Progress'||st==='Completed'||st==='Draft'||st==='Ready for Review')&&P.draft,'A.detailEvidence')).join('')}</div>
+  </div></div>
+
+  ${st==='Completed'||st==='Correction Requested'||st==='Archived'&&pi?`<div class="card"><div class="hd"><h3>Downstream</h3></div><div class="bd"><dl class="kv">
+    <dt>Packaged inventory</dt><dd>${pi?`<a href="#inventory">${pi.id}</a> · ${fmtN(pi.units)} units, ${fmtN(pi.reserved)} reserved, ${fmtN(pi.depleted)} shipped · available ${fmtN(pi.units-pi.reserved-pi.depleted)}`:'–'}</dd>
+    <dt>Product availability</dt><dd>${p?esc(p.name)+' now has '+fmtN(S.packaged.filter(x=>x.productId===p.id).reduce((a,x)=>a+x.units-x.reserved-x.depleted,0))+' sellable units across all lots':'–'}</dd>
+    <dt>Quality assessment</dt><dd class="small muted">Packaging inputs (material, closure, tamper evidence, loss) are available to the Quality module. Not built in V1.</dd>
+  </dl></div></div>`:''}
+
+  ${r.corrections.length?`<div class="card"><div class="hd"><h3>Corrections</h3></div><div class="bd">${r.corrections.map(c=>`<div class="small" style="padding:6px 0;border-bottom:1px solid var(--line-soft)"><b>${c.id}</b> ${badge(c.status)} · ${fmtDT(c.at)} by ${esc(c.by)}<br>${esc(c.type)}: ${c.delta>0?'+':''}${c.delta} units. ${esc(c.reason)}${c.decision?'<br><i>'+esc(c.decision)+'</i>':''}</div>`).join('')}</div></div>`:''}
+
+  ${auditBlock('run',r.id)}
+  <a class="btn" href="#runs">Back to runs</a>`;
+}
+function ledger(withdrawn,packed,loss){
+  if(withdrawn==null||packed==null)return '';
+  const neg=loss<0;const total=Math.max(withdrawn,packed);const pk=Math.min(packed,withdrawn)/total*100;const ls=Math.abs(loss)/total*100;
+  return `<div class="ledger"><div class="bar"><div class="seg pk" style="width:${pk}%">Packaged ${fmtL(packed)}</div><div class="seg ${neg?'ng':'ls'}" style="width:${Math.max(ls,3)}%" title="${neg?'Underfill ':'Loss '}${fmtL(Math.abs(loss))}">${ls>=14?(neg?'Underfill ':'Loss ')+fmtL(Math.abs(loss)):''}</div></div>
+  <div class="legend"><span>Withdrawn ${fmtL(withdrawn)}</span><span>= packaged ${fmtL(packed)} ${neg?'−':'+'} ${neg?'underfill':'documented loss'} ${fmtL(Math.abs(loss))}</span></div></div>`;
+}
+function evSlot(r,k,label,editable,handler){
+  const e=r.evidence[k];
+  return `<div class="ev"><div class="ph">${e?(e.data?`<img src="${e.data}" alt="${esc(label)}">`:`<span>${esc(e.name)}<br><span class="tiny">photo stored on server</span></span>`):'<span>No photo yet</span>'}</div>
+  <div class="cap"><b>${label} <span class="tag">optional</span></b>${e?`<span class="tiny muted">${esc(e.name)} · ${fmtDT(e.at)}</span>`:''}</div>
+  ${editable?`<div class="act"><label class="btn sm">${e?'Replace':'Add photo'}<input type="file" accept="image/*" capture="environment" onchange="${handler}('${r.id||''}','${k}',this)"></label>${e?`<button class="btn sm" onclick="${handler}('${r.id||''}','${k}',null)">Remove</button>`:''}</div>`:''}</div>`;
+}
+function auditBlock(ent,id){
+  const list=S.audit.filter(a=>a.ent===ent&&a.id===id).sort((a,b)=>b.ts.localeCompare(a.ts));
+  return `<div class="card"><div class="hd"><h3>Activity</h3><span class="small muted">${list.length} entries</span></div><div class="bd">${list.length?`<ul class="audit">${list.map(a=>`<li><time>${fmtDT(a.ts)}</time><div><b>${esc(a.act)}</b> <span class="who">· ${esc(a.who)}, ${esc(a.role)}</span><br><span class="small">${esc(a.detail)}</span></div></li>`).join('')}</ul>`:'<div class="empty">No activity yet.</div>'}</div></div>`;
+}
+
+/* ========================= DETAIL ACTIONS ========================= */
+const A={};
+function modal(html){$('#modalRoot').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)A.closeModal()"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`}
+A.closeModal=()=>{$('#modalRoot').innerHTML=''};
+function readFile(input,cb){const f=input.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>cb({name:f.name,size:f.size,data:rd.result,at:nowISO()});rd.readAsDataURL(f)}
+A.detailEvidence=(id,k,input)=>{const r=run(id);if(!input){r.evidence[k]=null;audit('run',id,'Evidence removed',k);render();return}
+  readFile(input,ev=>{const d=dupEvidence(ev,id);if(d.length)toast('Warning: this photo looks identical to evidence on '+d.join(', ')+'. Saved anyway.');r.evidence[k]=ev;audit('run',id,'Evidence added',EV_SLOTS.find(s=>s[0]===k)[1]+(d.length?' (possible duplicate of '+d.join(', ')+')':''));if(!S.online){r.syncState='queued';S.queue.push({kind:'evidence',id,at:nowISO()})}render()})};
+A.setStatus=(id,s)=>{const r=run(id);audit('run',id,'Status changed',r.status+' → '+s);r.status=s;render();toast('Run marked '+s)};
+A.startRun=id=>{const r=run(id);
+  const issues=claimIssues(r).filter(i=>i.block);if(issues.length){toast('Cannot start: a selected claim is '+issues[0].c.state+'. Edit the label first.');return}
+  if(!r.productId||!r.variantId||!r.sourceId||!r.storageIds.length){toast('Cannot start: product, variant, source and storage are required.');return}
+  const b=batch(r.sourceId);if(b.blocked){toast('Cannot start: source '+b.id+' is blocked. '+b.blocked);return}
+  const need=theoreticalL(r);const avail=r.storageIds.reduce((a,sid)=>a+storageAvail(storage(sid),id),0);
+  if(need&&need>avail){toast(`Cannot start: planned volume ${fmtL(need)} exceeds available ${fmtL(avail)} on the chosen storage.`);return}
+  const res={};if(need){let left=need;r.storageIds.forEach(sid=>{const av=storageAvail(storage(sid),id);const take=Math.min(av,left);if(take>0){res[sid]=Math.round(take*10)/10;left-=take}})}
+  r.reservations=res;audit('run',id,'Started run',need?'Reserved '+Object.entries(res).map(([k,v])=>fmtL(v)+' on '+storage(k).name.split(',')[0]).join(', '):'No planned count, so nothing reserved');
+  Object.entries(res).forEach(([k,v])=>S.movements.push({id:uid('MV'),ts:nowISO(),type:'Soft reservation',storageId:k,liters:-v,ref:id,note:'Run started; planned volume reserved until completion'}));
+  r.status='In Progress';render();toast('Run started');};
+A.stopRun=id=>{const r=run(id);if(!confirm('Return this run to Draft? The storage reservation will be released. Nothing has been withdrawn.'))return;
+  Object.entries(r.reservations).forEach(([k,v])=>S.movements.push({id:uid('MV'),ts:nowISO(),type:'Reservation released',storageId:k,liters:v,ref:id,note:'Run returned to draft'}));
+  r.reservations={};audit('run',id,'Returned to draft','Reservation released');r.status='Draft';render()};
+A.cancelDraft=id=>{const r=run(id);if(!confirm('Cancel this draft? It will be archived, not deleted, and no inventory is affected.'))return;r.status='Archived';r.retention='Archived';r.archivedAt=nowISO();r.archiveReason='Draft cancelled';audit('run',id,'Cancelled draft','Archived. No inventory was affected.');render();toast('Draft archived')};
+A.archive=id=>{const r=run(id);if(!confirm('Archive this run? It stays fully preserved with its inventory links and can be shown again with "Show archived".'))return;r.status='Archived';r.retention='Archived';r.archivedAt=nowISO();audit('run',id,'Archived','Hidden from default views; record and relationships preserved.');render();toast('Run archived')};
+A.unarchive=id=>{const r=run(id);const back=r.completedAt?'Completed':'Draft';r.status=back;r.retention='Active';audit('run',id,'Restored from archive','Status → '+back);render()};
+A.verify=(id,v)=>{const r=run(id);audit('run',id,'Verification set',r.verification+' → '+v);r.verification=v;render()};
+
+/* ---- completion ---- */
+const C={};
+A.openComplete=id=>{const r=run(id);Object.assign(C,{id,units:r.plannedUnits||'',type:r.withdrawType||'Exact',w:'',lo:'',hi:'',reason:r.lossReason||'',note:'',cost:r.cost??'',bbRev:r.bestBefore.reviewed,lot:r.lotCode||''});renderComplete()};
+A.cset=(k,v)=>{C[k]=v;renderComplete(true)};
+function completeCalc(){
+  const r=run(C.id);const v=variant(r.variantId);const units=parseInt(C.units)||0;const th=units*v.unitMl/1000;
+  let w=parseFloat(C.w);if(C.type==='Range'){const lo=parseFloat(C.lo),hi=parseFloat(C.hi);w=(!isNaN(lo)&&!isNaN(hi))?(lo+hi)/2:NaN}
+  const loss=isNaN(w)?NaN:Math.round((w-th)*100)/100;const tol=S.settings.tolerancePct/100*(w||0);
+  const blocks=[],warns=[];
+  if(!S.online)blocks.push('You are offline. Completion updates inventory in one step and needs a connection.');
+  if(units<=0)blocks.push('Actual unit count must be greater than zero.');
+  if(isNaN(w)||w<=0)blocks.push('Enter the oil actually withdrawn from storage.');
+  if(!isNaN(loss)&&Math.abs(loss)>tol&&w>0)blocks.push(`Withdrawn and packaged volumes differ by ${fmtL(Math.abs(loss))}, more than the ${S.settings.tolerancePct}% tolerance (${fmtL(tol)}). Recheck the unit count or the meter reading before completing.`);
+  if(!isNaN(loss)&&Math.abs(loss)>0.05&&!C.reason)blocks.push('Choose a reason for the difference between withdrawn and packaged oil.');
+  if(!isNaN(loss)&&loss<-0.05)warns.push('Withdrawn is less than the packaged volume. This is recorded as an underfill context, not as a fill-volume finding; the app does not assess legal fill compliance.');
+  const issues=claimIssues(r);issues.forEach(i=>(i.block?blocks:warns).push(`Claim "${i.c.text}" is ${i.c.state}.`));
+  if(r.bestBefore.mode!=='none'&&!C.bbRev)blocks.push('Review the date label text before completing. It comes from a configured rule, not from a legal check.');
+  const dl=dupLot(C.lot,r.id);if(dl.length)warns.push('Lot code '+C.lot+' is already used on '+dl.join(', ')+'. Allowed, but check it is intended.');
+  const alloc={};let left=isNaN(w)?0:w;const short=[];
+  r.storageIds.forEach(sid=>{const s=storage(sid);const av=s.liters-reservedOn(sid,r.id);const take=Math.min(av,left);if(take>0){alloc[sid]=Math.round(take*100)/100;left-=take}});
+  if(left>0.01&&!isNaN(w)){blocks.push(`Only ${fmtL(w-left)} is available on the chosen storage; ${fmtL(left)} short. Other runs may hold reservations.`)}
+  const cost=parseFloat(C.cost);
+  return {r,v,units,th,w,loss,tol,blocks,warns,alloc,cost:isNaN(cost)?null:cost};
+}
+function renderComplete(keep){
+  const k=completeCalc();const r=k.r;
+  const html=`<h2>Complete ${esc(r.name||r.id)}</h2><p class="small muted">Enter what physically happened. Nothing changes until you confirm.</p>
+  <div class="grid2"><div class="field"><label>Actual units filled</label><input type="number" min="1" inputmode="numeric" value="${esc(C.units)}" oninput="A.cset('units',this.value)"></div>
+  <div class="readonly"><span>Packaged volume <span class="tag auto">auto</span></span><span class="v num">${fmtL(k.th)}</span></div></div>
+  <div class="field"><label>Oil withdrawn from storage</label>
+    <div class="grid3"><select onchange="A.cset('type',this.value)">${['Exact','Estimated','Range'].map(x=>`<option ${C.type===x?'selected':''}>${x}</option>`).join('')}</select>
+    ${C.type==='Range'?`<input type="number" step="0.1" placeholder="from L" value="${esc(C.lo)}" oninput="A.cset('lo',this.value)"><input type="number" step="0.1" placeholder="to L" value="${esc(C.hi)}" oninput="A.cset('hi',this.value)">`:`<input type="number" step="0.1" inputmode="decimal" placeholder="liters" value="${esc(C.w)}" oninput="A.cset('w',this.value)" style="grid-column:span 2">`}</div>
+    <div class="help">From the tank meter or scale. Reservations from other runs are respected.</div></div>
+  ${!isNaN(k.loss)&&k.w>0?ledger(k.w,k.th,k.loss):''}
+  ${!isNaN(k.loss)&&Math.abs(k.loss)>0.05?`<div class="grid2"><div class="field"><label>Reason for the difference</label><select onchange="A.cset('reason',this.value)"><option value="">Choose</option>${LOSS_REASONS.map(x=>`<option ${C.reason===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Note <span class="opt">optional</span></label><input type="text" value="${esc(C.note)}" oninput="C.note=this.value"></div></div>`:''}
+  <div class="grid2"><div class="field"><label>Printed lot code</label><input type="text" value="${esc(C.lot)}" oninput="A.cset('lot',this.value)"><div class="help">Internal id ${r.id} stays linked whatever is printed.</div></div>
+  <div class="field"><label>Packaging cost <span class="opt">optional, ${r.currency}</span></label><input type="number" step="0.01" value="${esc(C.cost)}" oninput="A.cset('cost',this.value)">${k.cost!=null&&k.units?`<div class="help num">${(k.cost/k.units).toFixed(2)} ${r.currency} per unit <span class="tag auto">auto</span></div>`:''}</div></div>
+  ${r.bestBefore.mode!=='none'?`<label class="check ${C.bbRev?'sel':''}"><input type="checkbox" ${C.bbRev?'checked':''} onchange="A.cset('bbRev',this.checked)"><div class="t"><b>Date label reviewed: "${esc(r.bestBefore.text||bbFromRule(r.dateStart))}"</b><span>${r.bestBefore.mode==='rule'?`Generated from the configured rule (${S.settings.bbMonths} months from packaging date). Confirm it matches what is printed.`:'Entered manually. Confirm it matches what is printed.'}</span></div></label>`:''}
+  ${k.warns.map(w=>`<div class="banner warn">${esc(w)}</div>`).join('')}
+  ${k.blocks.map(b=>`<div class="banner block">${esc(b)}</div>`).join('')}
+  <h3 style="margin-top:12px">Inventory impact</h3>
+  <div class="impact">${Object.entries(k.alloc).map(([sid,l])=>`<div class="row"><span>${esc(storage(sid).name)}</span><span class="d minus num">− ${fmtL(l)}</span></div>`).join('')||'<div class="row muted">Enter withdrawn volume to see storage impact</div>'}
+    <div class="row"><span>Batch ${r.sourceId}</span><span class="d minus num">− ${fmtL(isNaN(k.w)?0:k.w)}</span></div>
+    <div class="row"><span>Packaged inventory, ${esc(prod(r.productId).name)} ${k.v.name}</span><span class="d plus num">+ ${fmtN(k.units)} units</span></div>
+    <div class="row"><span>Documented loss</span><span class="d num">${isNaN(k.loss)?'–':(k.loss<0?'underfill ':'')+fmtL(Math.abs(k.loss))}</span></div>
+    <div class="row"><span>Label snapshot</span><span class="d">frozen (${esc(r.labelVersionId||prod(r.productId).labelVersion)})</span></div></div>
+  <p class="tiny muted">Completion is atomic: validation, withdrawal, loss, packaged inventory, storage balances and the audit entry are written together or not at all.</p>
+  <div class="btnrow"><button class="btn primary" ${k.blocks.length?'disabled':''} onclick="A.doComplete()">Confirm and complete</button><button class="btn" onclick="A.closeModal()">Cancel</button></div>`;
+  if(keep){const m=$('.modal');const focus=document.activeElement;const sel=focus&&focus.selectionStart;const path=focus&&focus.getAttribute('oninput');m.innerHTML=html;if(path){const el=[...m.querySelectorAll('[oninput]')].find(e=>e.getAttribute('oninput')===path);if(el){el.focus();try{el.setSelectionRange(sel,sel)}catch(e){}}}}
+  else modal(html);
+}
+A.doComplete=()=>{
+  const k=completeCalc();if(k.blocks.length){renderComplete(true);return}
+  const r=k.r;const p=prod(r.productId);
+  // build everything first, then commit
+  const ts=nowISO();const piId=uid('PI');
+  const snapshot={product:p.name,brand:p.brand,volume:k.v.unitMl>=1000?(k.v.unitMl/1000)+' L':k.v.unitMl+' ml',claims:r.claimIds.map(claim).filter(Boolean).map(c=>({id:c.id,text:c.text,state:c.state})),lot:C.lot,qr:r.qrStatus,legal:p.legal,labelVersion:r.labelVersionId||p.labelVersion,frozenAt:ts};
+  const moves=[];Object.entries(k.alloc).forEach(([sid,l])=>moves.push({id:null,ts,type:'Withdrawal',storageId:sid,liters:-l,ref:r.id,note:'Bulk oil withdrawn for packaging'}));
+  if(Math.abs(k.loss)>0.05)moves.push({id:null,ts,type:k.loss<0?'Underfill context':'Packaging loss',storageId:Object.keys(k.alloc)[0],liters:k.loss<0?0:-k.loss,ref:r.id,note:C.reason+(k.loss<0?' (withdrawn below packaged volume; no stock effect)':' (included in withdrawal)')});
+  Object.entries(r.reservations).forEach(([sid,l])=>moves.push({id:null,ts,type:'Reservation released',storageId:sid,liters:l,ref:r.id,note:'Run completed'}));
+  moves.push({id:null,ts,type:'Packaged in',packagedId:piId,units:k.units,ref:r.id,note:`${k.units} × ${k.v.unitMl} ml, ${C.lot||'no lot code'}`});
+  // commit
+  Object.entries(k.alloc).forEach(([sid,l])=>{storage(sid).liters=Math.round((storage(sid).liters-l)*100)/100});
+  moves.forEach(m=>{m.id=uid('MV');S.movements.push(m)});
+  S.packaged.push({id:piId,runId:r.id,productId:r.productId,variantId:r.variantId,sourceId:r.sourceId,lotCode:C.lot,units:k.units,reserved:0,depleted:0,status:'Available',createdAt:ts});
+  Object.assign(r,{status:'Completed',actualUnits:k.units,withdrawnL:Math.round(k.w*100)/100,withdrawType:C.type,withdrawLow:C.type==='Range'?parseFloat(C.lo):null,withdrawHigh:C.type==='Range'?parseFloat(C.hi):null,lossL:k.loss,lossReason:C.reason,lossNote:C.note,lotCode:C.lot,cost:k.cost,labelSnapshot:snapshot,labelVersionId:snapshot.labelVersion,completedAt:ts,completedBy:me(),packagedId:piId,reservations:{}});
+  r.bestBefore.reviewed=C.bbRev;if(r.bestBefore.mode==='rule')r.bestBefore.text=bbFromRule(r.dateStart);
+  if(r.qrStatus==='Planned')r.qrStatus='Generated';
+  audit('run',r.id,'Completed run',`${k.units} units, ${fmtL(k.w)} withdrawn (${C.type}), loss ${fmtL(k.loss)}${C.reason?' ('+C.reason+')':''}. Label ${snapshot.labelVersion} frozen. Packaged inventory ${piId} created.`);
+  A.closeModal();location.hash='#run/'+r.id;render();toast('Run completed. Inventory updated.');
+};
+
+/* ---- corrections ---- */
+A.openCorrection=id=>{const r=run(id);modal(`<h2>Request a correction</h2><p class="small muted">Completed runs are never edited in place. A correction record is added and, once reviewed, adjusts packaged inventory.</p>
+  <div class="field"><label>Adjustment to actual unit count</label><input type="number" id="corDelta" placeholder="e.g. -12 or +4"><div class="help">Current count ${fmtN(r.actualUnits)}. Use negative numbers for units that were miscounted or damaged.</div></div>
+  <div class="field"><label>Reason</label><textarea id="corReason" placeholder="What was found and how"></textarea></div>
+  <div class="btnrow"><button class="btn primary" onclick="A.submitCorrection('${id}')">Submit correction</button><button class="btn" onclick="A.closeModal()">Cancel</button></div>`)};
+A.submitCorrection=id=>{const r=run(id);const d=parseInt($('#corDelta').value);const reason=$('#corReason').value.trim();if(isNaN(d)||d===0||!reason){toast('Enter a non-zero adjustment and a reason.');return}
+  const c={id:uid('COR'),type:'Quantity adjustment',delta:d,reason,by:me(),at:nowISO(),status:'Requested'};r.corrections.push(c);r.status='Correction Requested';audit('run',id,'Correction requested',`${c.id}: ${d>0?'+':''}${d} units. ${reason}`);A.closeModal();render();toast('Correction submitted for review')};
+A.applyCorrection=id=>{const r=run(id);const c=r.corrections.find(x=>x.status==='Requested');if(!c){r.status='Completed';render();return}
+  const pi=S.packaged.find(x=>x.id===r.packagedId);const newUnits=r.actualUnits+c.delta;
+  modal(`<h2>Review correction ${c.id}</h2><p>${esc(c.reason)}</p><p class="small muted">Requested by ${esc(c.by)}, ${fmtDT(c.at)}</p>
+  <div class="impact"><div class="row"><span>Actual units</span><span class="d num">${fmtN(r.actualUnits)} → ${fmtN(newUnits)}</span></div><div class="row"><span>Packaged inventory ${pi?pi.id:''}</span><span class="d num ${c.delta<0?'minus':'plus'}">${c.delta>0?'+':''}${c.delta} units</span></div><div class="row"><span>Theoretical oil <span class="tag auto">auto</span></span><span class="d num">${fmtL(newUnits*variant(r.variantId).unitMl/1000)}</span></div><div class="row"><span>Oil withdrawn, storage balances</span><span class="d">unchanged (the oil already left the tank)</span></div></div>
+  ${pi&&pi.units+c.delta<pi.reserved+pi.depleted?'<div class="banner block">This adjustment would leave fewer units than are already reserved or shipped. Reject it or resolve the reservations first.</div>':''}
+  <div class="btnrow"><button class="btn primary" ${pi&&pi.units+c.delta<pi.reserved+pi.depleted?'disabled':''} onclick="A.decideCorrection('${id}','${c.id}',true)">Apply adjustment</button><button class="btn danger" onclick="A.decideCorrection('${id}','${c.id}',false)">Reject</button><button class="btn" onclick="A.closeModal()">Later</button></div>`)};
+A.decideCorrection=(id,cid,ok)=>{const r=run(id);const c=r.corrections.find(x=>x.id===cid);const pi=S.packaged.find(x=>x.id===r.packagedId);
+  if(ok){r.actualUnits+=c.delta;r.lossL=Math.round((r.withdrawnL-theoreticalL(r))*100)/100;if(pi){pi.units+=c.delta;S.movements.push({id:uid('MV'),ts:nowISO(),type:'Adjustment',packagedId:pi.id,units:c.delta,ref:r.id+' / '+c.id,note:c.reason})}
+    c.status='Applied';c.decision='Applied by '+me();audit('run',id,'Correction applied',`${c.id}: actual units now ${r.actualUnits}; loss recalculated to ${fmtL(r.lossL)}`)}
+  else{c.status='Rejected';c.decision='Rejected by '+me();audit('run',id,'Correction rejected',c.id)}
+  r.status='Completed';A.closeModal();render();toast(ok?'Adjustment applied':'Correction rejected')};
+
+/* ---- deletion request ---- */
+A.requestDeletion=(entType,entId)=>{const r=run(entId);const highImpact=!!r.completedAt;
+  modal(`<h2>Request deletion of ${r.id}</h2>
+  ${highImpact?'<div class="banner warn">This is finalized operational history. Normal practice is to correct or archive it. Deletion is high impact: it goes to Admin Review first, and packaged inventory and ledger movements that reference it are retained by policy.</div>':'<div class="banner info">This record has no inventory effect. After the waiting period the job will remove it and leave a tombstone.</div>'}
+  <div class="field"><label>Reason</label><textarea id="delReason"></textarea></div>
+  <p class="small muted">Waiting period: ${S.settings.waitingDays} days. The request can be cancelled until the job is ready. This is not instant erasure.</p>
+  <div class="btnrow"><button class="btn danger" onclick="A.submitDeletion('${entType}','${entId}',${highImpact})">Submit request</button><button class="btn" onclick="A.closeModal()">Cancel</button></div>`)};
+A.submitDeletion=(entType,entId,high)=>{const reason=$('#delReason').value.trim();if(!reason){toast('A reason is required.');return}const r=run(entId);const ts=nowISO();const ready=new Date(Date.now()+S.settings.waitingDays*864e5).toISOString();
+  const j={id:uid('DJ'),entType,entId,label:`${r.id} ${r.name||''} (${r.status}${r.completedAt?', completed run':''})`.trim(),requestedBy:me(),requestedAt:ts,waitingDays:S.settings.waitingDays,readyAt:ready,status:high?'Admin Review':'Waiting',reason,log:[{ts,s:'Requested'},{ts,s:high?'Admin Review':'Waiting'}]};
+  S.jobs.push(j);r.retention='Pending Deletion';audit('job',j.id,'Deletion requested',`${r.id}. ${reason}`);audit('run',r.id,'Deletion requested',`Job ${j.id}, status ${j.status}`);A.closeModal();render();toast('Deletion request '+j.id+' created')};
+/* ========================= WIZARD ========================= */
+const W={step:0,d:null,editing:null};
+const STEPS=['Product','Source','Plan','Label','Evidence'];
+function viewWizard(id){
+  if(!perm().draft)return `<div class="banner block">Your role (${esc(S.role)}) cannot create or edit draft runs.</div><a class="btn" href="#runs">Back</a>`;
+  if(id){const r=run(id);if(!r)return '<div class="banner block">Run not found.</div>';if(r.status!=='Draft'&&r.status!=='Ready for Review')return `<div class="banner block">Only Draft or Ready for Review runs can be edited. Completed runs are changed through corrections.</div><a class="btn" href="#run/${id}">Back to run</a>`;
+    if(W.editing!==id){W.d=JSON.parse(JSON.stringify(r));W.editing=id;W.step=0}}
+  else if(W.editing!==null||!W.d){W.d=newRun();W.editing=null;W.step=0}
+  const d=W.d;
+  const steps=`<div class="steps">${STEPS.map((s,i)=>`<button class="${i<W.step?'done':i===W.step?'cur':''}" onclick="A.wStep(${i})"><div class="l"></div><span class="n">${i+1}. ${s}</span></button>`).join('')}</div>`;
+  const body=[wStep1,wStep2,wStep3,wStep4,wStep5][W.step](d);
+  return `<div class="pagehead"><div><h1>${id?'Edit '+esc(d.name||d.id):'New packaging run'}</h1><div class="sub">Drafts never touch inventory. Save any time and finish later, even offline.</div></div>${d.syncState==='queued'?'<span class="tag queued">queued offline</span>':''}</div>
+  ${steps}<div class="card"><div class="bd">${body}</div></div>
+  <div class="btnrow">${W.step>0?`<button class="btn" onclick="A.wStep(${W.step-1})">Back</button>`:''}${W.step<4?`<button class="btn primary" onclick="A.wNext()">Next</button>`:''}
+  <span style="flex:1"></span><button class="btn" onclick="A.wSave('Draft')">Save draft</button>${W.step===4?`<button class="btn primary" onclick="A.wSave('Ready for Review')">Save and mark ready</button>`:''}
+  <a class="btn link" href="${id?'#run/'+id:'#runs'}" onclick="W.editing=undefined;W.d=null">Discard changes</a></div>`;
+}
+A.wStep=i=>{W.step=i;render()};
+A.wNext=()=>{const d=W.d;const e=wValidate(W.step,d);if(e){toast(e);return}W.step++;render()};
+function wValidate(step,d){
+  if(step===0&&(!d.productId||!d.variantId))return 'Choose a product and a packaging variant.';
+  if(step===1&&(!d.sourceId||!d.storageIds.length))return 'Choose a source batch and at least one storage.';
+  return '';
+}
+A.w=(k,v)=>{const d=W.d;const path=k.split('.');let o=d;while(path.length>1)o=o[path.shift()];o[path[0]]=v;render()};
+A.wProduct=pid=>{const d=W.d;d.productId=pid;d.variantId='';const p=prod(pid);d.labelVersionId=p?p.labelVersion:'';d.claimIds=[];render()};
+A.wVariant=vid=>{const d=W.d;const v=variant(vid);d.variantId=vid;d.pkg={type:v.type,material:v.material,color:v.color,closure:v.closure,tamper:v.tamper};render()};
+A.wSource=bid=>{const d=W.d;d.sourceId=bid;d.storageIds=[];render()};
+A.wStorage=(sid,on)=>{const d=W.d;d.storageIds=on?[...new Set([...d.storageIds,sid])]:d.storageIds.filter(x=>x!==sid);render()};
+A.wClaim=(cid,on)=>{const d=W.d;d.claimIds=on?[...new Set([...d.claimIds,cid])]:d.claimIds.filter(x=>x!==cid);render()};
+A.wEvidence=(_,k,input)=>{const d=W.d;if(!input){d.evidence[k]=null;render();return}readFile(input,ev=>{const dup=dupEvidence(ev,d.id);if(dup.length)toast('Warning: this photo looks identical to evidence on '+dup.join(', ')+'. Kept anyway.');ev.dup=dup;d.evidence[k]=ev;render()})};
+A.wSave=status=>{const d=W.d;const e=wValidate(0,d);if(e){W.step=0;render();toast(e);return}
+  if(status==='Ready for Review'){const e2=wValidate(1,d);if(e2){W.step=1;render();toast(e2);return}const bl=claimIssues(d).filter(i=>i.block);if(bl.length){W.step=3;render();toast('Remove the '+bl[0].c.state.toLowerCase()+' claim before marking ready.');return}}
+  const isNew=!d.id;if(isNew){d.id=uid('PR');d.createdAt=nowISO();d.createdBy=me()}
+  if(d.bestBefore.mode==='rule')d.bestBefore.text=bbFromRule(d.dateStart);
+  const prev=isNew?null:run(d.id).status;d.status=status;d.syncState=S.online?'synced':'queued';
+  Object.keys(d.evidence).forEach(k=>{if(d.evidence[k])delete d.evidence[k].dup});
+  if(isNew)S.runs.push(d);else Object.assign(run(d.id),d);
+  if(!S.online)S.queue.push({kind:isNew?'create':'update',id:d.id,at:nowISO()});
+  audit('run',d.id,isNew?'Created draft':'Draft saved',`${prod(d.productId).name}, ${variant(d.variantId).name}${prev&&prev!==status?'. Status '+prev+' → '+status:''}${S.online?'':' (offline, queued)'}`);
+  const dl=dupLot(d.lotCode,d.id);if(dl.length)toast('Saved. Note: lot code also used on '+dl.join(', '));else toast(S.online?'Saved':'Saved offline, will sync when connected');
+  W.editing=undefined;W.d=null;location.hash='#run/'+d.id;};
+
+function wStep1(d){
+  const p=prod(d.productId);
+  return `<h2>Product and packaging variant</h2><p class="small muted">One product and one variant per run. Filling a second product? Save this run and start another.</p>
+  <div class="grid2"><div class="field"><label>Run name <span class="opt">optional</span></label><input type="text" placeholder="e.g. Christmas 500 ml run" value="${esc(d.name)}" onchange="A.w('name',this.value)"></div>
+  <div class="field"><label>Packaging date</label><input type="date" value="${d.dateStart}" onchange="A.w('dateStart',this.value)"></div></div>
+  <details><summary>Multi-day run or start time</summary><div class="grid2"><div class="field"><label>End date <span class="opt">optional</span></label><input type="date" value="${d.dateEnd}" onchange="A.w('dateEnd',this.value)"></div><div class="field"><label>Start time <span class="opt">optional</span></label><input type="time" value="${d.time}" onchange="A.w('time',this.value)"></div></div></details>
+  <div class="field"><label>Product</label>${S.products.map(x=>`<label class="check ${x.status!=='Active'?'dis':''} ${d.productId===x.id?'sel':''}"><input type="radio" name="prod" ${x.status!=='Active'?'disabled':''} ${d.productId===x.id?'checked':''} onchange="A.wProduct('${x.id}')"><div class="t"><b>${esc(x.name)} ${x.status!=='Active'?badge(x.status):''}</b><span>${esc(x.brand)} · label ${x.labelVersion}${x.status!=='Active'?' · cannot accept new runs':''}</span></div></label>`).join('')}</div>
+  ${p?`<div class="field"><label>Packaging variant</label>${S.variants.filter(v=>v.productId===p.id).map(v=>`<label class="check ${d.variantId===v.id?'sel':''}"><input type="radio" name="var" ${d.variantId===v.id?'checked':''} onchange="A.wVariant('${v.id}')"><div class="t"><b>${v.name}</b><span>${v.unitMl>=1000?v.unitMl/1000+' L':v.unitMl+' ml'} per unit · ${v.type}, ${v.material}, ${v.closure}</span></div></label>`).join('')}</div>`:''}
+  ${d.variantId?`<div class="readonly"><span>Unit volume <span class="tag auto">from variant</span></span><span class="v num">${variant(d.variantId).unitMl} ml</span></div>
+  <details><summary>Materials (filled from the variant, adjust if different this time)</summary><div class="grid2">
+    ${[['type','Package type',PKG_TYPES],['material','Material',MATERIALS],['color','Bottle colour',COLORS],['closure','Closure',CLOSURES],['tamper','Tamper evidence',TAMPER]].map(([k,l,opts])=>`<div class="field"><label>${l}</label><select onchange="A.w('pkg.${k}',this.value)">${opts.map(o=>`<option ${d.pkg[k]===o?'selected':''}>${o}</option>`).join('')}</select></div>`).join('')}</div></details>`:''}`;
+}
+function wStep2(d){
+  const v=variant(d.variantId);const need=d.plannedUnits&&v?d.plannedUnits*v.unitMl/1000:null;
+  return `<h2>Source oil and storage</h2><p class="small muted">One batch or blend batch per run. Every storage you pick must hold that same batch.</p>
+  <div class="field"><label>Source</label>${S.batches.map(b=>{const av=batchAvail(b.id,d.id);const dis=!!b.blocked||av<=0;return `<label class="check ${dis?'dis':''} ${d.sourceId===b.id?'sel':''}"><input type="radio" name="src" ${dis?'disabled':''} ${d.sourceId===b.id?'checked':''} onchange="A.wSource('${b.id}')"><div class="t"><b>${b.id} <span class="tag">${b.type==='BlendBatch'?'Blend batch':'Batch'}</span></b><span>${esc(b.name)} · harvest ${b.harvest} · <span class="num">${fmtL(av)} available</span>${b.blocked?'<br><span style="color:var(--red)">Blocked: '+esc(b.blocked)+'</span>':''}</span></div></label>`}).join('')}</div>
+  ${d.sourceId?`<div class="field"><label>Storage holding ${d.sourceId}</label>${batchStorages(d.sourceId).map(s=>{const res=reservedOn(s.id,d.id);const av=storageAvail(s,d.id);const holders=S.runs.filter(r=>r.status==='In Progress'&&r.id!==d.id&&r.reservations[s.id]).map(r=>r.id);return `<label class="check ${d.storageIds.includes(s.id)?'sel':''}"><input type="checkbox" ${d.storageIds.includes(s.id)?'checked':''} onchange="A.wStorage('${s.id}',this.checked)"><div class="t"><b>${esc(s.name)}</b><span class="num">${fmtL(s.liters)} on hand${res?`, ${fmtL(res)} reserved by ${holders.join(', ')}`:''} · <b>${fmtL(av)} available</b></span></div></label>`}).join('')}
+  ${need?(()=>{const av=d.storageIds.reduce((a,sid)=>a+storageAvail(storage(sid),d.id),0);return need>av?`<div class="banner block">Planned ${fmtL(need)} exceeds ${fmtL(av)} available on the chosen storage. Pick more storage, lower the plan, or wait for the other run to finish. The app will not override a reservation.</div>`:`<div class="banner ok">Planned ${fmtL(need)} fits within ${fmtL(av)} available.</div>`})():''}</div>`:''}`;
+}
+function wStep3(d){
+  const v=variant(d.variantId);const need=d.plannedUnits&&v?d.plannedUnits*v.unitMl/1000:null;const av=d.storageIds.reduce((a,sid)=>a+storageAvail(storage(sid),d.id),0);
+  return `<h2>Plan</h2><p class="small muted">Planning only. Inventory moves when the run is completed with actual counts.</p>
+  <div class="grid2"><div class="field"><label>Planned units <span class="opt">optional</span></label><input type="number" min="0" inputmode="numeric" value="${d.plannedUnits??''}" oninput="W.d.plannedUnits=this.value?parseInt(this.value):null;A.wLive()"></div>
+  <div class="readonly"><span>Oil needed <span class="tag auto">auto</span></span><span class="v num" id="liveNeed">${fmtL(need)}</span></div></div>
+  <div id="liveBanner">${need?(need>av?`<div class="banner warn">Needs ${fmtL(need)}; ${fmtL(av)} available on the chosen storage.</div>`:`<div class="banner ok">${fmtL(need)} of ${fmtL(av)} available.</div>`):''}</div>
+  <p class="small muted">${v?`${v.unitMl} ml × units, shown in litres.`:''} Starting the run reserves this volume so other runs cannot take it.</p>`;
+}
+A.wLive=()=>{const d=W.d;const v=variant(d.variantId);const need=d.plannedUnits&&v?d.plannedUnits*v.unitMl/1000:null;const av=d.storageIds.reduce((a,sid)=>a+storageAvail(storage(sid),d.id),0);
+  $('#liveNeed').textContent=fmtL(need);$('#liveBanner').innerHTML=need?(need>av?`<div class="banner warn">Needs ${fmtL(need)}; ${fmtL(av)} available on the chosen storage.</div>`:`<div class="banner ok">${fmtL(need)} of ${fmtL(av)} available.</div>`):''};
+function wStep4(d){
+  const p=prod(d.productId);const cl=(p.claimIds||[]).map(claim).filter(Boolean);const elig=cl.filter(c=>ELIGIBLE.has(c.state)),inel=cl.filter(c=>!ELIGIBLE.has(c.state));
+  const issues=claimIssues(d);const dl=dupLot(d.lotCode,d.id);
+  return `<h2>Label and claims</h2><p class="small muted">What goes on the label for this run. It is frozen at completion, so later label changes never alter this run.</p>
+  ${issues.map(i=>`<div class="banner ${i.block?'block':'warn'}">"${esc(i.c.text)}" is now ${i.c.state}. ${i.block?'Remove it to continue; policy blocks completion.':'High risk; needs Marketing approval before completion.'}</div>`).join('')}
+  <div class="field"><label>Claims eligible for ${esc(p.name)}</label>${elig.length?elig.map(c=>`<label class="check ${d.claimIds.includes(c.id)?'sel':''}"><input type="checkbox" ${d.claimIds.includes(c.id)?'checked':''} onchange="A.wClaim('${c.id}',this.checked)"><div class="t"><b>${esc(c.text)} ${badge(c.state)}</b><span>${esc(c.note)}</span></div></label>`).join(''):'<p class="small muted">No eligible claims.</p>'}
+  ${inel.length?`<details><summary>${inel.length} claim${inel.length>1?'s':''} not eligible right now</summary>${inel.map(c=>`<label class="check dis ${d.claimIds.includes(c.id)?'sel':''}"><input type="checkbox" ${d.claimIds.includes(c.id)?'checked':''} onchange="A.wClaim('${c.id}',this.checked)"><div class="t"><b>${esc(c.text)} ${badge(c.state)}</b><span>${esc(c.note)}. ${d.claimIds.includes(c.id)?'Untick to remove from this label.':'Ask Marketing to update the support state.'}</span></div></label>`).join('')}</details>`:''}</div>
+  <div class="grid2"><div class="field"><label>Printed lot code <span class="opt">optional now, needed at completion</span></label><input type="text" value="${esc(d.lotCode)}" onchange="A.w('lotCode',this.value)"><div class="help">Internal id stays linked. <button class="btn link" onclick="A.w('lotCode','${lotSuggest(d.dateStart)}')">Use pattern ${esc(lotSuggest(d.dateStart))}</button>${dl.length?'<br><span style="color:var(--amber)">Also used on '+dl.join(', ')+'.</span>':''}</div></div>
+  <div class="field"><label>QR traceability</label><select onchange="A.w('qrStatus',this.value)">${QR_STATUS.map(q=>`<option ${d.qrStatus===q?'selected':''}>${q}</option>`).join('')}</select><div class="help">QR codes point only to the public traceability page for the printed lot code, never to internal ids.</div></div></div>
+  <div class="field"><label>Date label</label><select onchange="A.w('bestBefore.mode',this.value)"><option value="none" ${d.bestBefore.mode==='none'?'selected':''}>Not printed</option><option value="rule" ${d.bestBefore.mode==='rule'?'selected':''} ${S.settings.bbRuleOn?'':'disabled'}>From farm rule (${S.settings.bbMonths} months after packaging date)${S.settings.bbRuleOn?'':' — rule disabled by Admin'}</option><option value="manual" ${d.bestBefore.mode==='manual'?'selected':''}>Enter the printed text</option></select>
+    ${d.bestBefore.mode==='rule'?`<div class="readonly" style="margin-top:6px"><span>Text <span class="tag auto">rule</span></span><span class="v">${bbFromRule(d.dateStart)}</span></div>`:d.bestBefore.mode==='manual'?`<input type="text" style="margin-top:6px" placeholder="e.g. Best before 03/2028" value="${esc(d.bestBefore.text)}" onchange="A.w('bestBefore.text',this.value)">`:''}
+    <div class="help">You will confirm this text at completion. The app does not judge shelf life or legal date requirements.</div></div>
+  <details><summary>Supplier references (optional)</summary><div class="grid2">${['bottle','cap','label','carton'].map(k=>`<div class="field"><label>${k[0].toUpperCase()+k.slice(1)} supplier</label><select onchange="A.w('sup.${k}',this.value)"><option value="">None</option>${S.suppliers.map(s=>`<option value="${s.id}" ${d.sup[k]===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>`).join('')}<div class="field"><label>Supplier lot reference</label><input type="text" value="${esc(d.sup.lot)}" onchange="A.w('sup.lot',this.value)"></div></div></details>
+  <div class="grid2"><div class="field"><label>Packaging cost <span class="opt">optional</span></label><input type="number" step="0.01" value="${d.cost??''}" onchange="A.w('cost',this.value?parseFloat(this.value):null)"></div><div class="field"><label>Currency</label><select onchange="A.w('currency',this.value)">${['USD','LBP','EUR'].map(c=>`<option ${d.currency===c?'selected':''}>${c}</option>`).join('')}</select></div></div>`;
+}
+function wStep5(d){
+  const n=evidenceCount(d);
+  return `<h2>Evidence photos</h2><p class="small muted">Guided checklist. All four are optional; a missing photo never blocks completion.</p>
+  <div class="progress"><i style="width:${n*25}%"></i></div><p class="small num">${n} of 4 captured</p>
+  <div class="evgrid">${EV_SLOTS.map(([k,l])=>evSlot(d,k,l,true,'A.wEvidence')).join('')}</div>
+  ${Object.values(d.evidence).some(e=>e&&e.dup&&e.dup.length)?'<div class="banner warn">One or more photos look identical to evidence already attached to another run. Saving is allowed; check you have the right photo.</div>':''}
+  <p class="small muted" style="margin-top:10px">Offline? Photos are kept on this device and uploaded when you reconnect.</p>`;
+}
+
+/* ========================= INVENTORY ========================= */
+function viewInventory(){
+  return `<div class="pagehead"><div><h1>Inventory</h1><div class="sub">Bulk oil in storage and finished packaged stock</div></div></div>
+  <div class="card"><div class="hd"><h3>Bulk oil by batch</h3></div><div class="bd">${S.batches.map(b=>`<div style="margin-bottom:10px"><b>${b.id}</b> <span class="small muted">${esc(b.name)}</span>${b.blocked?' '+badge('Flagged'):''}
+    <table><thead><tr><th>Storage</th><th class="num">On hand</th><th class="num">Reserved</th><th class="num">Available</th></tr></thead><tbody>${batchStorages(b.id).map(s=>`<tr><td>${esc(s.name)}</td><td class="num">${fmtL(s.liters)}</td><td class="num">${fmtL(reservedOn(s.id))}</td><td class="num"><b>${fmtL(storageAvail(s))}</b></td></tr>`).join('')}</tbody></table></div>`).join('')}</div></div>
+  <div class="card"><div class="hd"><h3>Packaged inventory</h3></div><div class="bd tbl">${S.packaged.length?`<table><thead><tr><th>Lot</th><th>Product</th><th>Source</th><th class="num">Units</th><th class="num">Reserved</th><th class="num">Shipped</th><th class="num">Available</th></tr></thead><tbody>${S.packaged.map(pi=>`<tr class="row" onclick="location.hash='#run/${pi.runId}'"><td><b>${esc(pi.lotCode||pi.id)}</b><br><span class="tiny muted">${pi.id} · run ${pi.runId}</span></td><td>${esc(prod(pi.productId).name)}<br><span class="tiny muted">${variant(pi.variantId).name}</span></td><td>${pi.sourceId}</td><td class="num">${fmtN(pi.units)}</td><td class="num">${fmtN(pi.reserved)}</td><td class="num">${fmtN(pi.depleted)}</td><td class="num"><b>${fmtN(pi.units-pi.reserved-pi.depleted)}</b></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No packaged stock yet. Complete a run to create it.</div>'}
+  <p class="tiny muted">Reservations and shipments are owned by the sales and fulfilment modules (out of scope for V1); stubs shown for lineage.</p></div></div>
+  <div class="card"><div class="hd"><h3>Movement ledger</h3><span class="small muted">never deleted, even at zero balance</span></div><div class="bd tbl"><table><thead><tr><th>When</th><th>Movement</th><th>Where</th><th class="num">Amount</th><th>Ref</th></tr></thead><tbody>${[...S.movements].sort((a,b)=>b.ts.localeCompare(a.ts)).map(m=>`<tr><td class="tiny muted">${fmtDT(m.ts)}</td><td>${esc(m.type)}<br><span class="tiny muted">${esc(m.note)}</span></td><td>${m.storageId?esc(storage(m.storageId).name.split(',')[0]):m.packagedId||''}</td><td class="num ${(m.liters??m.units)<0?'':''}">${m.liters!=null?(m.liters>0?'+':'')+fmtL(m.liters):(m.units>0?'+':'')+fmtN(m.units)+' units'}</td><td class="tiny">${esc(m.ref)}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+
+/* ========================= LABELS (claims) ========================= */
+function viewLabels(){
+  if(!perm().claims)return '<div class="banner block">Marketing or Admin access is needed to manage claims and label versions.</div>';
+  return `<div class="pagehead"><div><h1>Labels and claims</h1><div class="sub">Support states drive what a run may print. Changing them never rewrites completed runs.</div></div></div>
+  <div class="card"><div class="hd"><h3>Product claims</h3></div><div class="bd tbl"><table><thead><tr><th>Claim</th><th>Support state</th><th>Basis</th></tr></thead><tbody>${S.claims.map(c=>`<tr><td><b>${esc(c.text)}</b><br><span class="tiny muted">used by ${S.products.filter(p=>p.claimIds.includes(c.id)).map(p=>p.name).join(', ')||'no product'}</span></td><td><select onchange="A.claimState('${c.id}',this.value)">${CLAIM_STATES.map(s=>`<option ${c.state===s?'selected':''}>${s}</option>`).join('')}</select></td><td class="small">${esc(c.note)}</td></tr>`).join('')}</tbody></table></div></div>
+  <div class="card"><div class="hd"><h3>Product label versions</h3></div><div class="bd">${S.products.map(p=>`<div class="small" style="padding:6px 0;border-bottom:1px solid var(--line-soft)"><b>${esc(p.name)}</b> ${badge(p.status)} · current label <span class="mono">${p.labelVersion}</span> <button class="btn sm" onclick="A.bumpLabel('${p.id}')">Publish new version</button><br><span class="muted">Runs already completed keep the version they were completed with.</span></div>`).join('')}</div></div>
+  ${auditBlock('product','P1')}`;
+}
+A.claimState=(cid,s)=>{const c=claim(cid);audit('claim',cid,'Support state changed',`${c.text}: ${c.state} → ${s}`);c.state=s;render();toast('Claim updated. Open drafts using it will show a warning.')};
+A.bumpLabel=pid=>{const p=prod(pid);const n=parseInt(p.labelVersion.split('v')[1])+1;const nv=`LV-${pid}-v${n}`;audit('product',pid,'Label version changed',`${p.labelVersion} → ${nv}. Historical runs keep their frozen snapshot.`);p.labelVersion=nv;S.runs.forEach(r=>{if(r.productId===pid&&(r.status==='Draft'||r.status==='Ready for Review'||r.status==='In Progress'))r.labelVersionId=nv});render();toast('Published '+nv+'. Open runs now point at it; completed runs are untouched.')};
+
+/* ========================= ADMIN ========================= */
+function viewAdmin(tab){
+  const P=perm();
+  const tabs=`<div class="tabs">${[['retention','Retention policies'],['deletion','Deletion requests'],['rules','Business rules'],['audit','Policy audit']].map(([k,l])=>`<a href="#admin/${k}" class="${tab===k?'on':''}">${l}</a>`).join('')}</div>`;
+  const ro=!P.admin?'<div class="banner info">Read only. Only Admin users can change retention policies or business rules.</div>':'';
+  let body='';
+  if(tab==='retention')body=`<div class="card"><div class="hd"><h3>Retention by data category</h3><span class="small muted">0 = no automatic expiry</span></div><div class="bd tbl"><table><thead><tr><th>Category</th><th class="num">Window (days)</th><th>Notes</th></tr></thead><tbody>${S.policies.map((p,i)=>`<tr><td><b>${esc(p.cat)}</b></td><td class="num"><input type="number" min="0" value="${p.days}" style="width:90px;padding:5px;border:1px solid var(--line);border-radius:4px" ${P.admin?'':'disabled'} onchange="A.policy(${i},this.value)"></td><td class="small">${esc(p.note)}</td></tr>`).join('')}</tbody></table></div></div>
+    <div class="card"><div class="hd"><h3>Retention states</h3></div><div class="bd small"><p>${RETENTION.map(badge).join(' ')}</p><p><b>Archive is not deletion.</b> Archived records keep their ids and relationships and can be viewed with "Show archived". Deletion is a request, a waiting period, a job, then a tombstone.</p><p>Deleting a user account never removes shared farm, business or operational history. Finalized runs and storage movements are corrected or archived, not deleted, through normal workflows.</p></div></div>`;
+  if(tab==='deletion')body=`<div class="card"><div class="hd"><h3>Deletion requests</h3><span class="small">${JOB_STATUS.map(badge).join(' ')}</span></div><div class="bd">${S.jobs.length?S.jobs.map(j=>{const cancellable=['Requested','Waiting','Admin Review'].includes(j.status)&&P.admin;return `<div style="padding:8px 0;border-bottom:1px solid var(--line-soft)"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>${j.id}</b> ${badge(j.status)} <span class="small">${esc(j.label)}</span></div>
+    <div class="small muted">Requested ${fmtDT(j.requestedAt)} by ${esc(j.requestedBy)} · waiting ${j.waitingDays} days · ready ${fmtD(j.readyAt)} · ${esc(j.reason)}</div>
+    ${j.result?`<div class="small">${esc(j.result)}</div>`:''}
+    <div class="btnrow" style="margin-top:6px">${cancellable?`<button class="btn sm" onclick="A.jobCancel('${j.id}')">Cancel request</button>`:''}${j.status==='Admin Review'&&P.admin?`<button class="btn sm primary" onclick="A.jobApprove('${j.id}')">Approve, start waiting period</button>`:''}${j.status==='Waiting'&&P.admin?`<button class="btn sm" onclick="A.jobReady('${j.id}')">Simulate waiting period elapsed</button>`:''}${j.status==='Ready'&&P.admin?`<button class="btn sm danger" onclick="A.jobRun('${j.id}')">Run deletion job</button>`:''}${j.status==='Failed'&&P.admin?`<button class="btn sm" onclick="A.jobRun('${j.id}')">Retry</button>`:''}<a class="btn sm link" href="#run/${j.entId}">Open record</a></div></div>`}).join(''):'<div class="empty">No deletion requests. Requests are made from a record\'s page by an Admin.</div>'}
+    <p class="tiny muted" style="margin-top:8px">A completed job leaves a tombstone so the record cannot come back from a backup restore. Backups are not edited; restores reconcile against tombstones.</p></div></div>`;
+  if(tab==='rules')body=`<div class="card"><div class="hd"><h3>Business rules</h3></div><div class="bd"><div class="grid2">
+    <div class="field"><label>Reconciliation tolerance (%)</label><input type="number" step="0.5" min="0" value="${S.settings.tolerancePct}" ${P.admin?'':'disabled'} onchange="A.setting('tolerancePct',parseFloat(this.value))"><div class="help">Withdrawn must equal packaged plus documented loss within this share of withdrawn volume.</div></div>
+    <div class="field"><label>Ineligible claim policy</label><select ${P.admin?'':'disabled'} onchange="A.setting('claimPolicy',this.value)"><option value="block" ${S.settings.claimPolicy==='block'?'selected':''}>Block completion</option><option value="warn" ${S.settings.claimPolicy==='warn'?'selected':''}>Warn (high-risk banner)</option></select></div>
+    <div class="field"><label>Date label rule</label><select ${P.admin?'':'disabled'} onchange="A.setting('bbRuleOn',this.value==='1')"><option value="1" ${S.settings.bbRuleOn?'selected':''}>Enabled</option><option value="0" ${!S.settings.bbRuleOn?'selected':''}>Disabled</option></select></div>
+    <div class="field"><label>Months after packaging date</label><input type="number" min="1" value="${S.settings.bbMonths}" ${P.admin?'':'disabled'} onchange="A.setting('bbMonths',parseInt(this.value))"><div class="help">A farm rule, reviewed by a person before completion. Never an AI-generated legal date.</div></div>
+    <div class="field"><label>Lot code pattern</label><input type="text" value="${esc(S.settings.lotPattern)}" ${P.admin?'':'disabled'} onchange="A.setting('lotPattern',this.value)"><div class="help">Tokens: {YYMMDD}, {N}</div></div>
+    <div class="field"><label>Deletion waiting period (days)</label><input type="number" min="0" value="${S.settings.waitingDays}" ${P.admin?'':'disabled'} onchange="A.setting('waitingDays',parseInt(this.value))"></div>
+    </div></div></div>
+    <div class="card"><div class="hd"><h3>Roles</h3></div><div class="bd tbl"><table><thead><tr><th>Role</th><th>Draft runs</th><th>Complete runs</th><th>Approve claims</th><th>Retention admin</th></tr></thead><tbody>${Object.entries(ROLES).map(([k,v])=>`<tr><td><b>${k}</b><br><span class="tiny muted">${v.user}</span></td><td>${v.draft?'Yes':'–'}</td><td>${v.complete?'Yes':'–'}</td><td>${v.claims?'Yes':'–'}</td><td>${v.admin?'Yes':'–'}</td></tr>`).join('')}</tbody></table><p class="tiny muted">Inventory permission and marketing permission are separate on purpose.</p></div></div>`;
+  if(tab==='audit'){const list=S.audit.filter(a=>a.ent==='policy'||a.ent==='setting'||a.ent==='job').sort((a,b)=>b.ts.localeCompare(a.ts));body=`<div class="card"><div class="hd"><h3>Policy and deletion audit</h3></div><div class="bd">${list.length?`<ul class="audit">${list.map(a=>`<li><time>${fmtDT(a.ts)}</time><div><b>${esc(a.act)}</b> · ${esc(a.id)} <span class="who">· ${esc(a.who)}, ${esc(a.role)}</span><br><span class="small">${esc(a.detail)}</span></div></li>`).join('')}</ul>`:'<div class="empty">Nothing yet.</div>'}</div></div>`}
+  return `<div class="pagehead"><div><h1>Admin</h1><div class="sub">Data retention, deletion and platform rules</div></div></div>${tabs}${ro}${body}`;
+}
+A.policy=(i,v)=>{const p=S.policies[i];const nv=parseInt(v)||0;audit('policy',p.cat,'Retention window changed',`${p.days} → ${nv} days`);p.days=nv;render();toast('Policy updated and logged')};
+A.setting=(k,v)=>{const old=S.settings[k];audit('setting',k,'Rule changed',`${old} → ${v}`);S.settings[k]=v;render();toast('Rule updated and logged')};
+function jobLog(j,s){j.status=s;j.log.push({ts:nowISO(),s});audit('job',j.id,'Status → '+s,j.label)}
+A.jobCancel=id=>{const j=S.jobs.find(x=>x.id===id);if(!confirm('Cancel this deletion request? The record returns to its previous retention state.'))return;jobLog(j,'Cancelled');const r=run(j.entId);if(r&&r.retention==='Pending Deletion')r.retention=r.status==='Archived'?'Archived':'Active';audit('run',j.entId,'Deletion cancelled',j.id);render()};
+A.jobApprove=id=>{const j=S.jobs.find(x=>x.id===id);j.readyAt=new Date(Date.now()+j.waitingDays*864e5).toISOString();jobLog(j,'Waiting');render()};
+A.jobReady=id=>{const j=S.jobs.find(x=>x.id===id);jobLog(j,'Ready');render()};
+A.jobRun=id=>{const j=S.jobs.find(x=>x.id===id);const r=run(j.entId);jobLog(j,'Processing');
+  if(!r){jobLog(j,'Failed');j.result='Record not found.';render();return}
+  const ts=nowISO();
+  if(r.completedAt){// high impact: strip evidence and personal fields; keep operational record because ledger and packaged inventory reference it
+    Object.keys(r.evidence).forEach(k=>r.evidence[k]=null);r.name='';r.createdBy='(removed)';r.completedBy='(removed)';r.sup={bottle:'',cap:'',label:'',carton:'',lot:''};r.lossNote='';
+    r.retention='Retained by Policy';jobLog(j,'Partial');j.result='Evidence photos and personal fields removed. The operational record, its label snapshot, packaged inventory '+(r.packagedId||'')+' and ledger movements are retained by policy because other records depend on them.';
+    audit('run',r.id,'Partial deletion',j.id+': evidence and personal fields removed; operational record retained by policy')}
+  else{r.tomb={at:ts,job:j.id};r.retention='Deleted';r.evidence={};r.labelSnapshot=null;r.name='';r.claimIds=[];r.sup={};jobLog(j,'Completed');j.result='Record deleted. Tombstone '+r.id+' written; audit entries retained.';
+    audit('run',r.id,'Deleted',j.id+': tombstone written')}
+  render();toast('Deletion job '+j.status)};
+
+/* ========================= PUBLIC TRACE PREVIEW ========================= */
+function viewTrace(lot){
+  const r=S.runs.find(x=>x.lotCode===lot&&x.labelSnapshot);
+  if(!r)return `<div class="trace"><h1>Lot not found</h1><p class="muted">No published traceability page for "${esc(lot)}".</p></div><p style="text-align:center;margin-top:10px"><a href="#runs">Back to app</a></p>`;
+  const s=r.labelSnapshot;const b=batch(r.sourceId);
+  return `<div class="banner info" style="max-width:520px;margin:0 auto 10px">Preview of the public page a QR code resolves to. It shows the printed lot code only; internal record ids are never exposed.</div>
+  <div class="trace"><div class="qrbox" aria-hidden="true"></div><div class="brand">${esc(s.brand)}</div><h1>${esc(s.product)}</h1>
+  <dl class="kv"><dt>Lot</dt><dd class="mono">${esc(lot)}</dd><dt>Size</dt><dd>${esc(s.volume)}</dd><dt>Bottled</dt><dd>${fmtD(r.dateStart)}</dd><dt>Olives harvested</dt><dd>${b?esc(b.harvest)+', '+esc(S.farm.region):'–'}</dd><dt>On the label</dt><dd>${s.claims.map(c=>esc(c.text)).join(', ')||'–'}</dd>${r.bestBefore.text?`<dt>Date label</dt><dd>${esc(r.bestBefore.text)}</dd>`:''}</dl>
+  <p class="tiny muted" style="margin-top:14px">${esc(s.legal)}</p></div><p style="text-align:center;margin-top:10px"><a href="#run/${r.id}">Back to run</a></p>`;
+}
+
+/* ========================= BOOT ========================= */
+function setOnline(on){S.online=on;const n=$('#net');n.classList.toggle('off',!on);$('#netLabel').textContent=on?'Online':'Offline';$('#offlineBar').classList.toggle('show',!on);
+  if(on&&S.queue.length){const n=S.queue.length;S.queue.forEach(q=>{const r=run(q.id);if(r){r.syncState='synced';audit('run',r.id,'Synced from offline queue',q.kind+' saved at '+fmtDT(q.at))}});S.queue=[];toast(n+' queued change'+(n>1?'s':'')+' synced');}
+  render()}
+$('#net').addEventListener('click',()=>setOnline(!S.online));
+$('#net').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setOnline(!S.online)}});
+const rs=$('#roleSel');rs.innerHTML=Object.entries(ROLES).map(([k,v])=>`<option value="${k}">${v.user} · ${k}</option>`).join('');rs.value=S.role;
+rs.addEventListener('change',()=>{S.role=rs.value;if(location.hash.startsWith('#labels')&&!perm().claims)location.hash='#home';render();toast('Now acting as '+me()+' ('+S.role+')')});
+if(!location.hash)location.hash='#home';render();
+</script>
+</body>
+</html>
